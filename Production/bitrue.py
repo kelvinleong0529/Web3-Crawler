@@ -11,22 +11,22 @@ p = os.path.abspath('.')
 sys.path.insert(1, p)
 
 # import Coin Gecko & Solana API and modules
-from Bitrue.getWebsiteAddressAndCoinName import bitrueGetWebsiteAddressAndCoinName
+from Bitrue.getWebsiteUrlAndCoinName import bitrueGetWebsiteUrlAndCoinName
 from CoinGecko.bitrue import coinGeckoGetWebisteAddress
 
 def crawlerFunction(tokenSymbol):
 
-    websiteAddressFromBitrue = False
-    websiteAddressFromCoinGecko = False
+    WebsiteUrlFromBitrue = False
+    WebsiteUrlFromCoinGecko = False
     coinName = False
     existsOnCoinGecko = False
 
-    websiteAddressFromBitrue,coinName = bitrueGetWebsiteAddressAndCoinName(tokenSymbol)
+    WebsiteUrlFromBitrue,coinName = bitrueGetWebsiteUrlAndCoinName(tokenSymbol)
     if coinName in ["0","-1"]:
         return [tokenSymbol,existsOnCoinGecko,coinName]
     coinNameInput = coinName.lower().replace(" ","-")
-    websiteAddressFromCoinGecko = coinGeckoGetWebisteAddress(coinNameInput)
-    if websiteAddressFromBitrue in websiteAddressFromCoinGecko:
+    WebsiteUrlFromCoinGecko = coinGeckoGetWebisteAddress(coinNameInput)
+    if WebsiteUrlFromBitrue in WebsiteUrlFromCoinGecko:
         existsOnCoinGecko = True
     return [tokenSymbol,existsOnCoinGecko,coinName]
 
