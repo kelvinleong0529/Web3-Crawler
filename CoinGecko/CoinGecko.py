@@ -58,11 +58,19 @@ class CoinGecko:
                 telegramChannelIdentifier = links["telegram_channel_identifier"]
                 self.telegramUrl = "https://t.me/{telegramChannelIdentifier}".format(telegramChannelIdentifier=telegramChannelIdentifier) if telegramChannelIdentifier != "" else None
                 self.telegramChannelUserCount = community["telegram_channel_user_count"]
+                # 3. Reddit
+                self.redditUrl = community["subreddit_url"]
 
                 # Scoring
                 self.coinGeckoRank = response["coingecko_rank"]
                 self.coinGeckoScore = response["coingecko_score"]
                 self.communityScore = response["community_score"]
                 self.liquidityScore = response["liquidity_score"]
+
+                # Image
+                self.image = requests.get(response["image"]["large"])
+
+                # Last updated time
+                self.lastUpdated = response["last_updated"]
 
             break
