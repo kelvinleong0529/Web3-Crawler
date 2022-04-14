@@ -11,8 +11,8 @@ p = os.path.abspath('.')
 sys.path.insert(1, p)
 
 # import Coin Gecko & Solana API and modules
-from Bitrue.getWebsiteUrlAndCoinName import bitrueGetWebsiteUrlAndCoinName
-from CoinGecko.bitrue import coinGeckoGetWebisteAddress
+from Exchanges.Centralized_Exchanges.Bitrue import Bitrue
+from CoinGecko import CoinGecko
 
 def crawlerFunction(tokenSymbol):
 
