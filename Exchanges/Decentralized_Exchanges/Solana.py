@@ -31,11 +31,8 @@ class Solana:
                 
                 # Community
                 self.twitter = data["twitter"]
-                self.GetCoinGeckoId = data["coingeckoId"]
+                self.CoinGeckoId = data["coingeckoId"]
 
                 break
             else:
                 continue
-
-temp = Solana("2wmKXX1xsxLfrvjEPrt2UHiqj8Gbzwxvffr9qmNjsw8g")
-print(temp.__dict__)
