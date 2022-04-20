@@ -10,10 +10,10 @@ class Solana:
     # function to get all the details of the token
     def __get_all_details(self) -> None:
         while True:
-            response = requests.get(self.__api,headers = self.__headers).json()
-            if response["succcess"]:
+            response = requests.get(self.__api,headers = self.__headers)
+            if str(response.status_code) == "200":
                 
-                data = response["data"]
+                data = response.json()["data"]
                 
                 # Basic information
                 self.symbol = data["symbol"]

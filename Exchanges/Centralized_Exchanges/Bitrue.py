@@ -18,18 +18,16 @@ class Bitrue:
 
     # function to get the token's website URL
     def get_website_url(self) -> str:
-        response = self.__api_response
         try:
-            website_url = response["data"]["coinInfo"]["baseInfo"]["website"]
+            website_url = self.__api_response["data"]["coinInfo"]["baseInfo"]["website"]
         except:
             website_url = 0
         return str(website_url)
 
     # function to get the token's full name
     def get_coin_name(self) -> str:
-        response = self.__api_response
         try:
-            coin_name = response["data"]["coinInfo"]["name3rd"]
+            coin_name = self.__api_response["data"]["coinInfo"]["name3rd"]
         except:
             coin_name = 0
         return str(coin_name)
