@@ -2,12 +2,13 @@ import requests
 
 class Solana:
 
-    def __init__(self,tokenAddress:str) -> None:
-        self.__api = "https://api.solscan.io/token/meta?token={tokenAddress}".format(tokenAddress=tokenAddress)
+    def __init__(self,token_address:str) -> None:
+        self.__api = "https://api.solscan.io/token/meta?token={token_address}".format(token_address=token_address)
         self.__headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36"}
-        self.__getAllDetails()
+        self.__get_all_details()
 
-    def __getAllDetails(self) -> None:
+    # function to get all the details of the token
+    def __get_all_details(self) -> None:
         while True:
             response = requests.get(self.__api,headers = self.__headers).json()
             if response["succcess"]:
@@ -31,7 +32,7 @@ class Solana:
                 
                 # Community
                 self.twitter = data["twitter"]
-                self.CoinGeckoId = data["coingeckoId"]
+                self.coingecko_id = data["coingeckoId"]
 
                 break
             else:

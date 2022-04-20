@@ -2,11 +2,11 @@ import requests
 
 class CoinGecko:
 
-    def __init__(self,coinGeckoId:str) -> None:
-        self.__api = "https://api.coingecko.com/api/v3/coins/{Id}?tickers=false&market_data=false".format(Id=coinGeckoId)
-        self.__getAllDetails()
+    def __init__(self,coingecko_id:str) -> None:
+        self.__api = "https://api.coingecko.com/api/v3/coins/{id}?tickers=false&market_data=false".format(id=coingecko_id)
+        self.__get_all_details()
 
-    def __getAllDetails(self) -> None:
+    def __get_all_details(self) -> None:
         while True:
             response = requests.get(self.__api)
             if str(response.status_code) == "200":
@@ -15,25 +15,25 @@ class CoinGecko:
                 # Basic information
                 self.symbol = response["symbol"]
                 self.name = response["name"]
-                self.hashingAlgorithm = response["hashing_algorithm"]
+                self.hashing_algorithm = response["hashing_algorithm"]
 
                 # Platforms & Blockchain Site URL
                 platforms = response["platforms"]
                 # 1. Ethereum
-                self.ethereumAddress = platforms["ethereum"] if "ethereum" in platforms else None
-                self.ethereumSiteUrl = "https://etherscan.io/token/{address}".format(address=self.ethereumAddress) if self.ethereumAddress else None
+                self.ethereum_address = platforms["ethereum"] if "ethereum" in platforms else None
+                self.ethereum_site_url = "https://etherscan.io/token/{address}".format(address=self.ethereum_address) if self.ethereum_address else None
                 # 2. Binance Smart Chain
-                self.bscAddress = platforms["binance-smart-chain"] if "binance-smart-chain" in platforms else None
-                self.bscSiteUrl = "https://bscscan.com/token/{address}".format(address=self.bscAddress) if self.bscAddress else None
+                self.bsc_address = platforms["binance-smart-chain"] if "binance-smart-chain" in platforms else None
+                self.bsc_ite_url = "https://bscscan.com/token/{address}".format(address=self.bsc_address) if self.bsc_address else None
                 # 3. Polygon
-                self.polygonAddress = platforms["polygon-pos"] if "polygon-pos" in platforms else None
-                self.polygonSiteUrl = "https://polygonscan.com/token/{address}".format(address=self.polygonAddress) if self.polygonAddress else None
+                self.polygon_address = platforms["polygon-pos"] if "polygon-pos" in platforms else None
+                self.polygon_site_url = "https://polygonscan.com/token/{address}".format(address=self.polygon_address) if self.polygon_address else None
                 # 4. Fantom
-                self.fantomAddress = platforms["fantom"] if "fantom" in platforms else None
-                self.fantomSiteUrl = "https://ftmscan.com/token/{address}".format(address=self.fantomAddress) if self.fantomAddress else None
+                self.fantom_address = platforms["fantom"] if "fantom" in platforms else None
+                self.fantom_site_url = "https://ftmscan.com/token/{address}".format(address=self.fantom_address) if self.fantom_address else None
                 # 5. Solana
-                self.solanaAddress = platforms["solana"] if "solana" in platforms else None
-                self.solanaSiteUrl = "https://solscan.io//token/{address}".format(address=self.solanaAddress) if self.solanaAddress else None
+                self.solana_address = platforms["solana"] if "solana" in platforms else None
+                self.solana_site_url = "https://solscan.io//token/{address}".format(address=self.solana_address) if self.solana_address else None
 
                 # Description
                 self.description = response["description"]["en"]
@@ -44,33 +44,33 @@ class CoinGecko:
                 # Links
                 links = response["links"]
                 self.homepages = [link for link in links["homepage"] if link]
-                self.officialForumUrl = [link for link in links["official_forum_url"] if link]
-                self.chatUrl = [link for link in links["chat_url"] if link]
-                self.announcementUrl = [link for link in links["announcement_url"] if link]
+                self.official_forum_url = [link for link in links["official_forum_url"] if link]
+                self.chat_url = [link for link in links["chat_url"] if link]
+                self.announcement_url = [link for link in links["announcement_url"] if link]
 
                 # Community
                 community = response["community_data"]
                 # 1. Twitter
-                twitterScreenName = links["twitter_screen_name"]
-                self.twitterUrl = "https://twitter.com/{twitterScreenName}".format(twitterScreenName=twitterScreenName) if twitterScreenName != "" else None
-                self.twitterFollowers = community["twitter_followers"]
+                twitter_screen_name = links["twitter_screen_name"]
+                self.twitterUrl = "https://twitter.com/{twitter_screen_name}".format(twitter_screen_name=twitter_screen_name) if twitter_screen_name != "" else None
+                self.twitter_followers = community["twitter_followers"]
                 # 2. Telegram
-                telegramChannelIdentifier = links["telegram_channel_identifier"]
-                self.telegramUrl = "https://t.me/{telegramChannelIdentifier}".format(telegramChannelIdentifier=telegramChannelIdentifier) if telegramChannelIdentifier != "" else None
-                self.telegramChannelUserCount = community["telegram_channel_user_count"]
+                telegram_channel_identifier = links["telegram_channel_identifier"]
+                self.telegramUrl = "https://t.me/{telegramChannelIdentifier}".format(telegramChannelIdentifier=telegram_channel_identifier) if telegram_channel_identifier != "" else None
+                self.telegram_channel_user_count = community["telegram_channel_user_count"]
                 # 3. Reddit
-                self.redditUrl = community["subreddit_url"]
+                self.reddit_url = community["subreddit_url"]
 
                 # Scoring
-                self.coinGeckoRank = response["coingecko_rank"]
-                self.coinGeckoScore = response["coingecko_score"]
-                self.communityScore = response["community_score"]
-                self.liquidityScore = response["liquidity_score"]
+                self.coingecko_rank = response["coingecko_rank"]
+                self.coingecko_score = response["coingecko_score"]
+                self.community_score = response["community_score"]
+                self.liquidity_score = response["liquidity_score"]
 
                 # Image
                 self.image = requests.get(response["image"]["large"])
 
                 # Last updated time
-                self.lastUpdated = response["last_updated"]
+                self.last_updated = response["last_updated"]
 
             break
