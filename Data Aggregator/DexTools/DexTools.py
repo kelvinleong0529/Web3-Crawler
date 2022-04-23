@@ -1,20 +1,24 @@
 import requests
 
-class DexTools:
-    def __init__(self,symbol:str=None) -> None:
+class DexTools_scraper:
+    def __init__(self) -> None:
         self.__headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36"}
-        self.symbol = symbol
+        self.__networks = ["ethereum","bsc","polygon"]#,"fantom","cronos","avalanche","oasis","velas","kucoin","metis",
+                        #  "optimism","arbitrum","celo","telos","aurora","moonbeam","moonriver","harmony","astar","fuse","iotex","oec","heco","milkomeda","dfk"]
 
     def __get_value(self,input_dict:dict,key:str) -> str:
         if isinstance(input_dict,dict):
             return input_dict[key] if key in input_dict else "N/A"
         return "N/A"
 
-    def get_details(self):
-        chains = ["ethereum","bsc","polygon","fantom","cronos","avalanche","oasis","velas","kucoin","metis"]
+    def get_tokens(self,search_string:str) -> list:
+        token_results = []
+        for index,network in enumerate(self.__networks):
+            token_results += self.__search(network,search_string)
+        return token_results
 
-    def get_ethereum(self) -> list:
-        api = "https://www.dextools.io/chain-metis/api/pair/search?s={search_string}".format(search_string=self.symbol)
+    def __search(self,network:str,search_string:str) -> list:
+        api = "https://www.dextools.io/chain-{network}/api/pair/search?s={search_string}".format(network=network,search_string=search_string)
         response = requests.get(api,headers= self.__headers)
         if str(response.status_code) == "200":
             response = response.json()
@@ -42,8 +46,8 @@ class DexTools:
                 # token gas details
                 creation = self.__get_value(value,"creation")
                 token["gas"] = self.__get_value(creation,"gas")
-                token["gas_price"] = self.__get_value(creation,"gas")
-                token["gas_used"] = self.__get_value(creation,"gas")
+                token["gas_price"] = self.__get_value(creation,"gasPrice")
+                token["gas_used"] = self.__get_value(creation,"cumulativeGasUsed")
 
                 # pair basic info
                 token["pair_exchange"] = self.__get_value(value,"exchange")
@@ -67,8 +71,3 @@ class DexTools:
                 search_result.append(token)
 
         return search_result
-
-
-myDexTools = DexTools('APE')
-result = myDexTools.get_ethereum()
-print(result)
