@@ -1,6 +1,6 @@
 import requests
 
-class Solana:
+class Solana_scraper:
 
     def __init__(self,token_address:str) -> None:
         self.__api = "https://api.solscan.io/token/meta?token={token_address}".format(token_address=token_address)

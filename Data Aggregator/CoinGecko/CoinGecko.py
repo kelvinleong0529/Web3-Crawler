@@ -1,6 +1,6 @@
 import requests
 
-class CoinGecko:
+class CoinGecko_scraper:
 
     def __init__(self,coingecko_id:str) -> None:
         self.__api = "https://api.coingecko.com/api/v3/coins/{id}?tickers=false&market_data=false".format(id=coingecko_id)
