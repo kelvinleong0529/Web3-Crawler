@@ -9,10 +9,10 @@ class DexTools_scraper:
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36"
         }
         self.__networks = [
-            "ethereum", "bsc", "polygon", "fantom", "cronos", "avalanche",
-            "oasis", "velas", "kucoin", "metis", "optimism", "arbitrum",
-            "celo", "telos", "aurora", "moonbeam", "moonriver", "harmony",
-            "astar", "fuse", "iotex", "oec", "heco", "milkomeda", "dfk"
+            'arbitrum', 'astar', 'aurora', 'avalanche', 'bsc', 'celo',
+            'cronos', 'dfk', 'ethereum', 'fantom', 'fuse', 'harmony', 'heco',
+            'iotex', 'kucoin', 'metis', 'milkomeda', 'moonbeam', 'moonriver',
+            'oasis', 'oec', 'optimism', 'polygon', 'telos', 'velas'
         ]
 
     def __get_value(self, input_dict: dict, key: str) -> str:
@@ -30,9 +30,9 @@ class DexTools_scraper:
         api = "https://www.dextools.io/chain-{network}/api/pair/search?s={search_string}".format(
             network=network, search_string=search_string)
         response = requests.get(api, headers=self.__headers)
+        search_result = []
         if str(response.status_code) == "200":
             response = response.json()
-            search_result = []
             for index, value in enumerate(response):
                 # initialize a dict to store the details
                 token = {}
