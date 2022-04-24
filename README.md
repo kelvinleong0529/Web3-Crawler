@@ -136,3 +136,5 @@ and more
 (2) Mytheria - Clash of Pantheons; Card,Turn-Based Strategy,Strategy; Mytheria is the first NFT game offering an exclusive Create to Earn feature for artists all over the world, with the name GodForge
 ...
 ```
+## **Parameteres**
+1. **category**: list, list of GameFi tokens category to filter
