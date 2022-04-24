@@ -17,7 +17,7 @@ class dextools_scraper:
 
     def __get_value(self, input_dict: dict, key: str) -> str:
         if isinstance(input_dict, dict):
-            return input_dict[key] if key in input_dict else "N/A"
+            return str(input_dict[key]) if key in input_dict else "N/A"
         return "N/A"
 
     def get_tokens(self, search_string: str) -> list:
