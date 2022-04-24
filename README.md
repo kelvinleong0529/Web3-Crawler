@@ -52,7 +52,7 @@ pipenv install
 >>> my_dextools_scraper = dextools_scraper()
 ... search_string = "APE"
 ... for token_detail in (my_dextools_scraper.get_tokens(search_string)):
-...     # print the address of all tokens with "APE" as symbol
+...     # print all token's address with "APE" as symbol or similar
 ...     print(token_detail["network"] + ", " + token_detail["address"])
 
 arbitrum, 0x4d221c3a5c10a74c377a5909658e2a639b6edb5c
@@ -61,6 +61,8 @@ bsc, 0x0b079b33b6e72311c6be245f9f660cc385029fc3
 ethereum, 0x14dd7ebe6cb084cb73ef377e115554d47dc9d61e
 ...
 ```
+## **Parameteres**
+1. **search_string**: str, token's name, symbol, or address that wanted to be searched
 
 # **2. Honeypot Detector**
 - Determine if a token is a honeypot (crypto scam)
@@ -71,9 +73,6 @@ ethereum, 0x14dd7ebe6cb084cb73ef377e115554d47dc9d61e
 3. Fantom
 4. Polygon
 ```
-## **Paramteres**
-1. **network**: str, must be either of one of the 4 networks above
-2. **address**: str, token's address that you would like to check for
 # **Usage**
 ```python
 >>> import honeypot_scraper
@@ -86,3 +85,6 @@ ethereum, 0x14dd7ebe6cb084cb73ef377e115554d47dc9d61e
 # based on 2 honeypot sources, 2 failed to detected honeypot, 0 detected honeypot
 {'message': 'Checked 2 honeypot source(s)', 'non_honeypot': 2, 'is_honeypot': 0}
 ```
+## **Parameteres**
+1. **network**: str, must be either of one of the 4 networks above
+2. **address**: str, token's address that you would like to check for
