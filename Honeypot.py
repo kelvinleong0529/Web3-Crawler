@@ -9,29 +9,29 @@ class honeypot_scraper:
         self.__network_pool = {
             "binance smart chain": {
                 0: {
-                    "function": self.__honeypot_is,
+                    "function": self.__check_honeypot_is,
                     "network": "bsc2"
                 },
                 1: {
-                    "function": self.__rugdoc,
+                    "function": self.__check_rugdoc,
                     "network": "bscscan"
                 }
             },
             "ethereum": {
                 0: {
-                    "function": self.__honeypot_is,
+                    "function": self.__check_honeypot_is,
                     "network": "eth"
                 }
             },
             "fantom": {
                 0: {
-                    "function": self.__rugdoc,
+                    "function": self.__check_rugdoc,
                     "network": "ftmscan"
                 }
             },
             "polygon": {
                 0: {
-                    "function": self.__rugdoc,
+                    "function": self.__check_rugdoc,
                     "network": "polygonscan"
                 }
             }
@@ -66,7 +66,7 @@ class honeypot_scraper:
         return {"message": "Target Network not supported!"}
 
     # function to check honeypot on "rugdoc", reference website: https://rugdoc.io/honeypot/
-    def __rugdoc(self, network: str, address: str) -> bool:
+    def __check_rugdoc(self, network: str, address: str) -> bool:
         api = "https://api.{network}.com/api?module=contract&action=getsourcecode&address={address}".format(
             network=network, address=address)
         honeypot_result = None
@@ -79,7 +79,7 @@ class honeypot_scraper:
         return honeypot_result
 
     # function to check honeypot on "honeypot.is", reference website: https://honeypot.is/
-    def __honeypot_is(self, network: str, address: str) -> bool:
+    def __check_honeypot_is(self, network: str, address: str) -> bool:
         api = "https://aywt3wreda.execute-api.eu-west-1.amazonaws.com/default/IsHoneypot?chain={network}&token={address}".format(
             address=address, network=network)
         honeypot_result = None
