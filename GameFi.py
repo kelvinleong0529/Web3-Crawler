@@ -110,11 +110,3 @@ class gamefi_scraper:
                     page_index += 1
 
         return token_detail_list
-
-
-my_gamefi_scraper = gamefi_scraper()
-category_list = ["3D", "Card"]
-for index, gamefi_token in enumerate(
-        my_gamefi_scraper.search_by_category(category_list)):
-    print("(" + str(index) + ") " + gamefi_token["game_name"] + "; " +
-          gamefi_token["category"] + "; " + gamefi_token["description"])
