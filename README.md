@@ -41,7 +41,7 @@ pipenv install
 
 | Field | Example          |
 |---------|----------------|
-| Token details     | name, address, symbol, decimals, holders count, total supply |
+| Token details     | name, network, address, symbol, decimals, holders count, total supply |
 | Pricing details     | price, volume, liquidity    |
 | Gas details   | gas price, cumulative gas used    |
 | Pairing details | pairing address, exchange, pair type, base and target token's info |
@@ -87,4 +87,4 @@ ethereum, 0x14dd7ebe6cb084cb73ef377e115554d47dc9d61e
 ```
 ## **Parameteres**
 1. **network**: str, must be either of one of the 4 networks above
-2. **address**: str, token's address that you would like to check for
+2. **address**: str, token's address that would like to check for honeypot
