@@ -48,7 +48,6 @@ class honeypot_scraper:
             for network in network_target.items():
                 honeypot_function = network[-1]["function"]
                 honeypot_network = network[-1]["network"]
-                # if function returns True means it's a HONEYPOT
                 if honeypot_function(honeypot_network, address):
                     is_honeypot += 1
                 else:

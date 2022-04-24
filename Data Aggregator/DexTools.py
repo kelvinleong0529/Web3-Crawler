@@ -9,22 +9,22 @@ class dextools_scraper:
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36"
         }
         self.__networks = [
-            'arbitrum', 'astar', 'aurora', 'avalanche', 'bsc', 'celo',
-            'cronos', 'dfk', 'ethereum', 'fantom', 'fuse', 'harmony', 'heco',
-            'iotex', 'kucoin', 'metis', 'milkomeda', 'moonbeam', 'moonriver',
-            'oasis', 'oec', 'optimism', 'polygon', 'telos', 'velas'
+            "arbitrum", "astar", "aurora", "avalanche", "bsc", "celo",
+            "cronos", "dfk", "ethereum", "fantom", "fuse", "harmony", "heco",
+            "iotex", "kucoin", "metis", "milkomeda", "moonbeam", "moonriver",
+            "oasis", "oec", "optimism", "polygon", "telos", "velas"
         ]
 
     def __get_value(self, input_dict: dict, key: str) -> str:
         if isinstance(input_dict, dict):
-            return str(input_dict[key]) if key in input_dict else "N/A"
+            return input_dict[key] if key in input_dict else "N/A"
         return "N/A"
 
     def get_tokens(self, search_string: str) -> list:
         token_detail_list = []
         for index, network in enumerate(self.__networks):
             token_detail_list += self.__search(network, search_string)
-        return token_detail_list
+        return [dict(token) for token in {tuple(tokens.items()) for tokens in token_detail_list}]
 
     def __search(self, network: str, search_string: str) -> list:
         api = "https://www.dextools.io/chain-{network}/api/pair/search?s={search_string}".format(

@@ -11,18 +11,21 @@ class gamefi_scraper:
             return str(input_dict[key]) if key in input_dict else "N/A"
         return "N/A"
 
-    def __search_by_category(self, category: str) -> list:
+    def search_by_category(self, category: list) -> list:
         page_index = 1
+        category = ",".join(category)
         token_detail_list = []
-        while True:
+        finished_scraping = False
+        while not finished_scraping:
             api = "https://v2.gamefi.org/_next/data/05TfXTSF5_7vpLam60k8c/hub.json?category={category}&page={page_index}".format(
                 category=category, page_index=page_index)
             response = requests.get(api)
             if str(response.status_code) == "200":
-                data = response.json()["pageProps"]["data"]
-                if page_index == data["lastPage"]:
+                lastPage = response.json()["pageProps"]["data"]["lastPage"]
+                data = response.json()["pageProps"]["data"]["data"]
+                # if the data is empty, meaning no search results is associated with the category
+                if not len(data):
                     break
-                data = data["data"]
                 for index, token_iterator in enumerate(data):
                     # initialize a dict to store the details
                     token = {}
@@ -42,10 +45,18 @@ class gamefi_scraper:
                         token_iterator, "developer")
                     token["language"] = self.__get_value(
                         token_iterator, "language")
+                    token["hashtags"] = self.__get_value(
+                        token_iterator, "hashtags")
                     token["description"] = self.__get_value(
                         token_iterator, "short_description")
 
                     # gamefi token IGO info
+                    token["ido_date"] = self.__get_value(
+                        token_iterator, "ido_date")
+                    token["ido_type"] = self.__get_value(
+                        token_iterator, "ido_type")
+                    token["ido_link"] = self.__get_value(
+                        token_iterator, "gamefi_ido_link")
                     token["igo_price"] = self.__get_value(
                         token_iterator, "token_price")
                     token["igo_roi"] = self.__get_value(token_iterator, "roi")
@@ -87,13 +98,23 @@ class gamefi_scraper:
                     token["cmc_id"] = self.__get_value(token_iterator,
                                                        "cmc_id")
                     token["cmc_slug"] = self.__get_value(
-                        token_iterator, "official_telegram_link")
+                        token_iterator, "coinmarketcap_slug")
                     token["cmc_rank"] = self.__get_value(
-                        token_iterator, "official_telegram_link")
+                        token_iterator, "cmc_rank")
+
+                    token_detail_list.append(token)
+
+                if page_index == lastPage:
+                    finished_scraping = True
+                else:
+                    page_index += 1
+
+        return token_detail_list
 
 
-api = "https://v2.gamefi.org/_next/data/05TfXTSF5_7vpLam60k8c/hub.json?category={category}".format(
-    category="Metaverse")
-response = requests.get(api)
-print(response.json()["pageProps"]["data"]["page"],
-      response.json()["pageProps"]["data"]["lastPage"])
+my_gamefi_scraper = gamefi_scraper()
+category_list = ["3D", "Card"]
+for index, gamefi_token in enumerate(
+        my_gamefi_scraper.search_by_category(category_list)):
+    print("(" + str(index) + ") " + gamefi_token["game_name"] + "; " +
+          gamefi_token["category"] + "; " + gamefi_token["description"])

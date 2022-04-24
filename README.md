@@ -51,14 +51,14 @@ pipenv install
 
 >>> my_dextools_scraper = dextools_scraper()
 ... search_string = "APE"
-... for token_detail in (my_dextools_scraper.get_tokens(search_string)):
+... for index,token in enumerate(my_dextools_scraper.get_tokens(search_string)):
 ...     # print all token's address with "APE" as symbol or similar
-...     print(token_detail["network"] + ", " + token_detail["address"])
+...     print(token["network"] + "; " + token["address"])
 
-arbitrum, 0x4d221c3a5c10a74c377a5909658e2a639b6edb5c
-avalanche, 0x0802d66f029c46e042b74d543fc43b6705ccb4ba
-bsc, 0x0b079b33b6e72311c6be245f9f660cc385029fc3
-ethereum, 0x14dd7ebe6cb084cb73ef377e115554d47dc9d61e
+(0) ApeCoin; ethereum; 0x4d224452801aced8b2f0aebe155379bb5d594381
+(1) APE MOON; bsc; 0xf5b21a18a510cd315dd9f46d3c117321f1851d51
+(2) BORD APE NIKE TOKEN; polygon; 0x9a575498ce240fe43504f53d68eef6440f0cf280
+(3) Ape-X; avalanche; 0xd039c9079ca7f2a87d632a9c0d7cea0137bacfb5
 ...
 ```
 ## **Parameteres**
@@ -88,3 +88,51 @@ ethereum, 0x14dd7ebe6cb084cb73ef377e115554d47dc9d61e
 ## **Parameteres**
 1. **network**: str, must be either of one of the 4 networks above
 2. **address**: str, token's address that would like to check for honeypot
+
+# **3. GameFi Token Info Generator**
+## **By Category**
+- Retrieve GameFi token's info based on **CATEGORY**
+- Example of GameFi token's category:
+```
+1. 2D PvP battler
+2. 3D
+3. Action
+4. Adventure
+5. Battle
+6. Card
+7. Collectibles
+8. Combat
+9. Idle Game
+10. Fantasy
+11. Metaverse
+12. MOBA
+13. MMORPG
+14. NFTs
+15. Party Game
+16. Play to Earn
+17. Puzzle
+18. Racing
+19. Real-Time Strategy
+20. Role Playing
+21. Simulation
+22. Strategy
+23. Tower Defense
+......
+and more
+```
+
+# **Usage**
+```python
+>>> import gamefi_scraper
+
+>>> my_gamefi_scraper = gamefi_scraper()
+... category_list = ["3D","Card"]
+... for index, gamefi_token in enumerate(my_gamefi_scraper.search_by_category(category_list)):
+...     print("(" + str(index) + ") " + gamefi_token["game_name"] + "; " +
+...         gamefi_token["category"] + "; " + gamefi_token["description"])
+
+(0) Splintershards; Card,Collectibles; Splinterlands is a unique digital trading card game that allows players to truly own their cards and other in-game assets.
+(1) Gods Unchained; Card,Collectibles,Metaverse; Gods Unchained is a free-to-play tactical card game that gives players true ownership of their in-game items.
+(2) Mytheria - Clash of Pantheons; Card,Turn-Based Strategy,Strategy; Mytheria is the first NFT game offering an exclusive Create to Earn feature for artists all over the world, with the name GodForge
+...
+```
