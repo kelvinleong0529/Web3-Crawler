@@ -21,16 +21,16 @@ class dextools_scraper:
         return "N/A"
 
     def get_tokens(self, search_string: str) -> list:
-        token_results = []
+        token_detail_list = []
         for index, network in enumerate(self.__networks):
-            token_results += self.__search(network, search_string)
-        return token_results
+            token_detail_list += self.__search(network, search_string)
+        return token_detail_list
 
     def __search(self, network: str, search_string: str) -> list:
         api = "https://www.dextools.io/chain-{network}/api/pair/search?s={search_string}".format(
             network=network, search_string=search_string)
         response = requests.get(api, headers=self.__headers)
-        search_result = []
+        token_detail_list = []
         if str(response.status_code) == "200":
             response = response.json()
             for index, value in enumerate(response):
@@ -89,9 +89,6 @@ class dextools_scraper:
                 token["pair_target_token_decimals"] = self.__get_value(
                     target_token, "decimals")
 
-                search_result.append(token)
+                token_detail_list.append(token)
 
-        return search_result
-
-
-
+        return token_detail_list
