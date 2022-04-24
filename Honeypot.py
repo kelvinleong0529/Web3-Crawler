@@ -87,10 +87,3 @@ class honeypot_scraper:
         if str(response.status_code) == "200":
             return response.json()["IsHoneypot"]
         return honeypot_result
-
-
-myHoneypoot_scraper = honeypot_scraper()
-print(
-    myHoneypoot_scraper.check_honeypot(
-        network="Binance Smart Chain",
-        address="0x7ccE94C0B2C8aE7661f02544E62178377Fe8cF92"))
