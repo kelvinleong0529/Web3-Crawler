@@ -1,7 +1,7 @@
 import requests
 
 
-class DexTools_scraper:
+class dextools_scraper:
 
     def __init__(self) -> None:
         self.__headers = {
@@ -40,6 +40,7 @@ class DexTools_scraper:
                 # token info
                 info = self.__get_value(value, "info")
                 token["name"] = self.__get_value(info, "name")
+                token["network"] = network
                 token["address"] = self.__get_value(info, "address")
                 token["symbol"] = self.__get_value(info, "symbol")
                 token["decimals"] = self.__get_value(info, "decimals")
@@ -91,3 +92,6 @@ class DexTools_scraper:
                 search_result.append(token)
 
         return search_result
+
+
+
