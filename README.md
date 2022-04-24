@@ -147,4 +147,4 @@ and more
 ...
 ```
 ## **Parameteres**
-1. **category**: list, list of GameFi tokens category to filter
+1. **category**: list, list of GameFi tokens category to filter (input is NOT case sensitive, eg: if we feed "2D" it will return filter results for "2D PvP battler" as well)
