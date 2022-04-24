@@ -42,9 +42,7 @@ class honeypot_scraper:
         network_pool = self.__network_pool
         if network in network_pool:
             network_target = network_pool[network]
-            is_honeypot = 0
-            non_honeypot = 0
-            source_checked = 0
+            is_honeypot, non_honeypot, source_checked = 0, 0, 0
             for network in network_target.items():
                 honeypot_function = network[-1]["function"]
                 honeypot_network = network[-1]["network"]

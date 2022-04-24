@@ -12,6 +12,7 @@ class NFT_scraper:
             return input_dict[key] if key in input_dict else "N/A"
         return "N/A"
 
+    # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
     def get_activity(self, collection_id: str, limit: int = 20) -> list:
         collection_id = collection_id.lower().replace(" ", "")
         api = "https://api.nftbase.com/web/api/v1/collection/activities?collection_id={collection_id}&limit={limit}".format(

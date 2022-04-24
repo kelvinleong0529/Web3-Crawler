@@ -11,6 +11,7 @@ class gamefi_scraper:
             return str(input_dict[key]) if key in input_dict else "N/A"
         return "N/A"
 
+    # function to filter GameFi tokens by category(s), reference website: https://v2.gamefi.org/
     def search_by_category(self, category: list) -> list:
         page_index = 1
         category = ",".join(category)
