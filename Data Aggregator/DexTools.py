@@ -55,7 +55,7 @@ class dextools_scraper:
                 token["diluted_market_cap"] = self.__get_value(
                     value, "diluted_market_cap")
 
-                # token gas details
+                # token gas info
                 creation = self.__get_value(value, "creation")
                 token["gas"] = self.__get_value(creation, "gas")
                 token["gas_price"] = self.__get_value(creation, "gasPrice")
