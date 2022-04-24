@@ -39,12 +39,12 @@ pipenv install
 ```
 # **Information Generated**
 
-| Field | Example          |
-|---------|----------------|
+| Field             | Example                                                               |
+|-------------------|-----------------------------------------------------------------------|
 | Token details     | name, network, address, symbol, decimals, holders count, total supply |
-| Pricing details     | price, volume, liquidity    |
-| Gas details   | gas price, cumulative gas used    |
-| Pairing details | pairing address, exchange, pair type, base and target token's info |
+| Pricing details   | price, volume, liquidity                                              |
+| Gas details       | gas price, cumulative gas used                                        |
+| Pairing details   | pairing address, exchange, pair type, base and target token's info    |
 # **Usage**
 ```python
 >>> import dextools_scraper
@@ -120,6 +120,16 @@ pipenv install
 ......
 and more
 ```
+# **Information Generated**
+
+| Field                 | Example                                                           |
+|-----------------------|-------------------------------------------------------------------|
+| GameFi Token details  | game name, network, address, category, description, etc.          |
+| IGO details           | IGO date, type, IGO link, IGO price, IGO ROI                      |
+| Pricing details       | price, price changed 24h, price volume_24h, market capitalization |
+| Important Links       | offical website link, android link, IOS link, web game link       |
+| Social Media          | twitter, medium, discord, telegram                                |
+| Coin Market Cap       | CMD ID, CMC slug, CMC rank                                        |
 
 # **Usage**
 ```python
