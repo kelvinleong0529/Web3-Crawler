@@ -3,7 +3,7 @@ import requests
 
 class honeypot_scraper:
 
-    # all the honeypot validate function returns True if detect honeypot and vice-versa
+    # all the honeypot validator function returns TRUE if detect honeypot and vice-versa
 
     def __init__(self) -> None:
         self.__network_pool = {
