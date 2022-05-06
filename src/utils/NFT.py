@@ -2,7 +2,7 @@ import requests
 import datetime
 
 
-class NFT_scraper:
+class NFT_scraper_base_class:
 
     def __init__(self) -> None:
         pass
@@ -12,13 +12,28 @@ class NFT_scraper:
             return input_dict[key] if key in input_dict else "N/A"
         return "N/A"
 
+
+class NFT_scraper_get_activity(NFT_scraper_base_class):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.__api = "https://api.nftbase.com/web/api/v1/collection/activities?collection_id={collection_id}&limit={limit}"
+        self.__activity_list = []
+
+    def __get_value(self, input_dict: dict, key: str) -> str:
+        return super().__get_value(input_dict, key)
+
     # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
     def get_activity(self, collection_id: str, limit: int = 20) -> list:
+        
+        # convert the collection id to lowercase and remove all whitespaces
         collection_id = collection_id.lower().replace(" ", "")
-        api = "https://api.nftbase.com/web/api/v1/collection/activities?collection_id={collection_id}&limit={limit}".format(
-            collection_id=collection_id, limit=limit)
-        activity_list = []
+
+        # make GET request to the API endpoint
+        api = self.__api.format(collection_id=collection_id, limit=limit)
         response = requests.get(api)
+
+        # if the request is successful
         if str(response.status_code) == "200":
             data = response.json()["data"]
             for activities in data:
@@ -63,6 +78,15 @@ class NFT_scraper:
                 activity["seller_is_whale"] = self.__get_value(
                     seller, "is_whale")
 
-                activity_list.append(activity)
+                self.__activity_list.append(activity)
 
-        return activity_list
+        return self.__activity_list
+
+class NFT_scraper_get_gallery(NFT_scraper_base_class):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def __get_value(self, input_dict: dict, key: str) -> str:
+        return super().__get_value(input_dict, key)
+    
+    def get_gallery(self,)
