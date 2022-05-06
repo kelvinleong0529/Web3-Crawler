@@ -1,7 +1,7 @@
 import requests
 
 
-class gamefi_scraper:
+class GameFi_scraper:
 
     def __init__(self) -> None:
         pass
@@ -22,8 +22,11 @@ class gamefi_scraper:
                 category=category, page_index=page_index)
             response = requests.get(api)
             if str(response.status_code) == "200":
+
+                # get the total number of pages
                 lastPage = response.json()["pageProps"]["data"]["lastPage"]
                 data = response.json()["pageProps"]["data"]["data"]
+
                 # if the data is empty, meaning no search results is associated with the category
                 if not len(data):
                     break
