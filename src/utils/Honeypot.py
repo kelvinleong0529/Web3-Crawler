@@ -6,7 +6,7 @@ class honeypot_scraper:
     # all the honeypot validator function returns TRUE if detect honeypot and vice-versa
 
     def __init__(self) -> None:
-        self.__network_pool = {
+        self.__NETWORK_POOL = {
             "binance smart chain": {
                 0: {
                     "function": self.__check_honeypot_is,
@@ -39,7 +39,7 @@ class honeypot_scraper:
 
     def check_honeypot(self, network: str, address: str) -> dict:
         network = network.lower().strip()
-        network_pool = self.__network_pool
+        network_pool = self.__NETWORK_POOL
         if network in network_pool:
             network_target = network_pool[network]
             is_honeypot, non_honeypot, source_checked = 0, 0, 0

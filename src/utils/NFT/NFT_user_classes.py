@@ -3,7 +3,7 @@ import datetime
 
 from NFT_scraper_base_class import NFT_scraper_base_class
 
-class NFT_scraper_get_user_details(NFT_scraper_base_class):
+class NFT_scraper_user_details(NFT_scraper_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -53,7 +53,7 @@ class NFT_scraper_get_user_details(NFT_scraper_base_class):
         return self.__user_details
 
 
-class NFT_scraper_get_user_gallery(NFT_scraper_get_user_details):
+class NFT_scraper_user_gallery(NFT_scraper_user_details):
 
     def __init__(self) -> None:
         super().__init__()
@@ -121,7 +121,7 @@ class NFT_scraper_get_user_gallery(NFT_scraper_get_user_details):
         return self.__user_gallery_list
 
 
-class NFT_scraper_get_user_collection(NFT_scraper_get_user_details):
+class NFT_scraper_user_collection(NFT_scraper_user_details):
 
     def __init__(self) -> None:
         super().__init__()
@@ -206,7 +206,7 @@ class NFT_scraper_get_user_collection(NFT_scraper_get_user_details):
         return self.__user_collection_list
 
 
-class NFT_scraper_get_user_activity(NFT_scraper_get_user_details):
+class NFT_scraper_user_activity(NFT_scraper_user_details):
 
     def __init__(self) -> None:
         super().__init__()
@@ -297,9 +297,9 @@ class NFT_scraper_get_user_activity(NFT_scraper_get_user_details):
         return self.__user_activity_list
 
 
-class NFT_scraper_user_class(NFT_scraper_get_user_collection,
-                             NFT_scraper_get_user_gallery,
-                             NFT_scraper_get_user_activity):
+class NFT_scraper_user_class(NFT_scraper_user_collection,
+                             NFT_scraper_user_gallery,
+                             NFT_scraper_user_activity):
 
     def __init__(self) -> None:
         super().__init__()
