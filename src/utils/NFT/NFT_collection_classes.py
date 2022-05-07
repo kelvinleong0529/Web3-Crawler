@@ -197,66 +197,67 @@ class NFT_scraper_collection_asset(NFT_scraper_base_class):
 
             # if the request is successful
             if str(response.status_code) == "200":
-                data = response.json()["data"]
+                edges = response.json()["data"]["edges"]
 
                 # if the response returns blank or empty data, break the loop
-                if not data:
+                if not edges:
                     finished_scraping = True
                     continue
 
-                collection_asset = {}
+                for edge in edges:
 
-                # collection basic details
-                collection_asset["id"] = self.get_value(data, "id")
-                collection_asset["name"] = self.get_value(data, "name")
-                collection_asset["image_url"] = self.get_value(
-                    data, "image_url")
-                collection_asset["banner_image_url"] = self.get_value(
-                    data, "banner_image_url")
-                collection_asset["description"] = self.get_value(
-                    data, "description")
+                    asset = edge["node"]["asset"]
 
-                # collection social media details
-                collection_asset["twitter_url"] = self.get_value(
-                    data, "twitter_url")
-                collection_asset["instagram_url"] = self.get_value(
-                    data, "instagram_url")
-                collection_asset["external_url"] = self.get_value(
-                    data, "external_url")
-                collection_asset["discord_url"] = self.get_value(
-                    data, "discord_url")
-                collection_asset["open_sea_url"] = self.get_value(
-                    data, "open_sea_url")
+                    collection_asset = {}
 
-                # collection item details
-                collection_asset["item_count"] = self.get_value(
-                    data, "item_count")
-                collection_asset["owner_count"] = self.get_value(
-                    data, "owner_count")
+                    # collection asset details
+                    collection_asset["name"] = self.get_value(asset, "name")
+                    collection_asset["image_url"] = self.get_value(
+                        asset, "imageUrl")
+                    collection_asset["is_delisted"] = self.get_value(
+                        asset, "isDelisted")
+                    collection_asset["is_frozen"] = self.get_value(
+                        asset, "isFrozen")
 
-                # collection trading / transaction details
-                collection_asset["volume_in_24h"] = self.get_value(
-                    data, "volume_in_24h")
-                collection_asset["floor_price"] = self.get_value(
-                    data, "floor_price")
-                collection_asset["mint_price"] = self.get_value(
-                    data, "mint_price")
-                collection_asset["blue_index"] = self.get_value(
-                    data, "blue_index")
+                    # collection asset transaction details
+                    order_data = self.get_value(asset, "orderData")
+                    best_ask = self.get_value(order_data, "bestAsk")
+                    maker = self.get_value(order_data, "maker")
+                    payment_asset_quantity = self.get_value(
+                        order_data, "paymentAssetQuantity")
+                    payment_asset_details = self.get_value(
+                        payment_asset_quantity, "asset")
+
+                    # collection asset transaction details
+                    collection_asset["opened_timestamp"] = self.get_value(
+                        maker, "openedAt")
+                    collection_asset["order_type"] = self.get_value(
+                        maker, "orderType")
+                    collection_asset["purchased_timestamp"] = self.get_value(
+                        best_ask, "closedAt")
+                    collection_asset["buyer_address"] = self.get_value(
+                        maker, "address")
+                    collection_asset["buying_price"] = self.get_value(
+                        payment_asset_details, "usdSpotPrice")
+
+                    self.__collection_asset_list.append(collection_asset)
+
+            offset += limit_per_page
 
         return self.__collection_asset_list
 
 
 class NFT_scraper_collection_class(NFT_scraper_collection_activity,
-                                   NFT_scraper_collection_detail):
+                                   NFT_scraper_collection_detail,NFT_scraper_collection_asset):
 
     def __init__(self) -> None:
         super().__init__()
 
-    def get_collection_activity(self,
-                                collection_id: str,
-                                limit: int = 20) -> list:
-        return super().get_collection_activity(collection_id, limit)
-
     def get_collection_detail(self, collection_id: str) -> dict:
         return super().get_collection_detail(collection_id)
+
+    def get_collection_activity(self, collection_id: str, limit_per_page: int = 20, limit: int = 50) -> list:
+        return super().get_collection_activity(collection_id, limit_per_page, limit)
+
+    def get_collection_asset(self, collection_id: str, limit_per_page: int = 20, limit: int = 50) -> list:
+        return super().get_collection_asset(collection_id, limit_per_page, limit)
