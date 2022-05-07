@@ -3,6 +3,7 @@ import datetime
 
 from NFT_scraper_base_class import NFT_scraper_base_class
 
+
 class NFT_scraper_user_details(NFT_scraper_base_class):
 
     def __init__(self) -> None:
@@ -57,13 +58,16 @@ class NFT_scraper_user_gallery(NFT_scraper_user_details):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/user/gallery?user_id={user_id}&offset={offset}&limit={limit}"
+        self.__api = "https://api.nftbase.com/web/api/v1/user/gallery?user_id={user_id}&offset={offset}&limit={limit_per_page}"
         self.__user_gallery_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
 
-    def get_user_gallery(self, user_address: str, limit: int = 20) -> list:
+    def get_user_gallery(self,
+                         user_address: str,
+                         limit_per_page: int = 20,
+                         limit: int = 50) -> list:
 
         # empty the return activity list
         self.__user_gallery_list.clear()
@@ -75,12 +79,12 @@ class NFT_scraper_user_gallery(NFT_scraper_user_details):
         finished_scraping = False
         offset = 0
 
-        while not finished_scraping:
+        while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
             api = self.__api.format(user_id=user_id,
                                     offset=offset,
-                                    limit=limit)
+                                    limit_per_page=limit_per_page)
             response = requests.get(api)
 
             # if the request is successful
@@ -114,7 +118,7 @@ class NFT_scraper_user_gallery(NFT_scraper_user_details):
 
                     # append the result into the list and increment the offset value by 1
                     self.__user_gallery_list.append(user_gallery)
-                    offset += 1
+                    offset += limit_per_page
 
         self.__user_gallery_list = super().remove_duplicate(
             self.__user_gallery_list)
@@ -125,13 +129,16 @@ class NFT_scraper_user_collection(NFT_scraper_user_details):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/user/collection?user_id={user_id}&offset={offset}&limit={limit}"
+        self.__api = "https://api.nftbase.com/web/api/v1/user/collection?user_id={user_id}&offset={offset}&limit={limit_per_page}"
         self.__user_collection_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
 
-    def get_user_collection(self, user_address: str, limit: int = 20) -> list:
+    def get_user_collection(self,
+                            user_address: str,
+                            limit_per_page: int = 20,
+                            limit: int = 50) -> list:
 
         # empty the return activity list
         self.__user_collection_list.clear()
@@ -143,12 +150,12 @@ class NFT_scraper_user_collection(NFT_scraper_user_details):
         finished_scraping = False
         offset = 0
 
-        while not finished_scraping:
+        while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
             api = self.__api.format(user_id=user_id,
                                     offset=offset,
-                                    limit=limit)
+                                    limit_per_page=limit_per_page)
             response = requests.get(api)
 
             # if the request is successful
@@ -199,7 +206,7 @@ class NFT_scraper_user_collection(NFT_scraper_user_details):
                         # append the result into the list and increment the offset value by 1
                         self.__user_collection_list.append(user_collection)
 
-                    offset += 1
+                    offset += limit_per_page
 
         self.__user_collection_list = super().remove_duplicate(
             self.__user_collection_list)
@@ -210,13 +217,16 @@ class NFT_scraper_user_activity(NFT_scraper_user_details):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/user/activities?user_id={user_id}&offset={offset}&limit={limit}"
+        self.__api = "https://api.nftbase.com/web/api/v1/user/activities?user_id={user_id}&offset={offset}&limit={limit_per_page}"
         self.__user_activity_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
 
-    def get_user_activity(self, user_address: str, limit: int = 20) -> list:
+    def get_user_activity(self,
+                          user_address: str,
+                          limit_per_page: int = 20,
+                          limit: int = 50) -> list:
 
         # empty the return activity list
         self.__user_activity_list.clear()
@@ -228,12 +238,12 @@ class NFT_scraper_user_activity(NFT_scraper_user_details):
         finished_scraping = False
         offset = 0
 
-        while not finished_scraping:
+        while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
             api = self.__api.format(user_id=user_id,
                                     offset=offset,
-                                    limit=limit)
+                                    limit_per_page=limit_per_page)
             response = requests.get(api)
 
             # if the request is successful
@@ -290,7 +300,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_details):
                     # append the result into the list and increment the offset value by 1
                     self.__user_activity_list.append(user_activity)
 
-                    offset += 1
+                    offset += limit_per_page
 
         self.__user_activity_list = super().remove_duplicate(
             self.__user_activity_list)
@@ -307,13 +317,20 @@ class NFT_scraper_user_class(NFT_scraper_user_collection,
     def get_user_details(self, user_address: str) -> dict:
         return super().get_user_details(user_address)
 
-    def get_user_gallery(self, user_address: str, limit: int = 20) -> list:
-        return super().get_user_gallery(user_address, limit)
+    def get_user_gallery(self,
+                         user_address: str,
+                         limit_per_page: int = 20,
+                         limit: int = 50) -> list:
+        return super().get_user_gallery(user_address, limit_per_page)
 
-    def get_user_collection(self, user_address: str, limit: int = 20) -> list:
-        return super().get_user_collection(user_address, limit)
+    def get_user_collection(self,
+                            user_address: str,
+                            limit_per_page: int = 20,
+                            limit: int = 50) -> list:
+        return super().get_user_collection(user_address, limit_per_page)
 
-    def get_user_activity(self, user_address: str, limit: int = 20) -> list:
-        return super().get_user_activity(user_address, limit)
-
-
+    def get_user_activity(self,
+                          user_address: str,
+                          limit_per_page: int = 20,
+                          limit: int = 50) -> list:
+        return super().get_user_activity(user_address, limit_per_page)
