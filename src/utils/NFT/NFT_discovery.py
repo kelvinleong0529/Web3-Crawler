@@ -99,8 +99,20 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
     def get_volume_ranking(self,
                            limit_per_page: int = None,
                            limit: int = None,
+                           time_range: str = "24h",
                            proxy_lum: dict = None):
-        FEATURE = "24h+Volume"
+
+        # validate to ensure the time_range is a STRING
+        if not isinstance(time_range, str):
+            raise TypeError("time_range parameter must be STRING type")
+        time_range = time_range.strip().lower()
+        time_range_list = ["24h", "7d"]
+
+        # validate to ensure the time_range is a valid time_range
+        if time_range not in time_range_list:
+            raise ValueError("time_range must be in [24h,7d]")
+
+        FEATURE = time_range + "+Volume"
         return self.__get_featured_nft(feature=FEATURE,
                                        limit_per_page=limit_per_page,
                                        limit=limit,

@@ -123,21 +123,6 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
                                        limit=limit,
                                        proxy_lum=proxy_lum)
 
-    def get_whales_crypto_punks(self,
-                                action_list: list = None,
-                                price_range: int = None,
-                                limit_per_page: int = None,
-                                limit: int = None,
-                                proxy_lum: dict = None) -> list:
-        FEATURE = "CryptoPunks"
-
-        return self.__get_featured_nft(feature=FEATURE,
-                                       action_list=action_list,
-                                       price_range=price_range,
-                                       limit_per_page=limit_per_page,
-                                       limit=limit,
-                                       proxy_lum=proxy_lum)
-
     def get_whales_famous(self,
                           action_list: list = None,
                           price_range: int = None,
@@ -175,6 +160,21 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
                                         limit: int = None,
                                         proxy_lum: dict = None) -> list:
         FEATURE = "BoredApeYachtClub"
+
+        return self.__get_featured_nft(feature=FEATURE,
+                                       action_list=action_list,
+                                       price_range=price_range,
+                                       limit_per_page=limit_per_page,
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
+
+    def get_whales_crypto_punks(self,
+                                action_list: list = None,
+                                price_range: int = None,
+                                limit_per_page: int = None,
+                                limit: int = None,
+                                proxy_lum: dict = None) -> list:
+        FEATURE = "CryptoPunks"
 
         return self.__get_featured_nft(feature=FEATURE,
                                        action_list=action_list,
