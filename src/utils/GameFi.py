@@ -5,22 +5,49 @@ class GameFi_scraper:
 
     def __init__(self) -> None:
         pass
+        self.__LIMIT = 20
 
     def __get_value(self, input_dict: dict, key: str) -> str:
         if isinstance(input_dict, dict):
             return str(input_dict[key]) if key in input_dict else "N/A"
         return "N/A"
 
+    # function to join the category list with "," and merge into a string
+    def __category_list_to_str(self, category: list) -> str:
+        if not isinstance(category, list):
+            raise TypeError("category parameter must be LIST type")
+        return ",".join(category)
+
+    # function to validate the "limit" parameter
+    def __validate_limit(self, limit: int) -> str:
+        if limit is None:
+            return self.__LIMIT
+        if not isinstance(limit, int):
+            raise TypeError("limit parameter must be INTEGER type")
+        return str(limit)
+
     # function to filter GameFi tokens by category(s), reference website: https://v2.gamefi.org/
-    def search_by_category(self, category: list) -> list:
-        page_index = 1
-        category = ",".join(category)
+    def search_by_category(self, category: list, limit: int = None) -> list:
+
+        # validate the input parameters
+        category = self.__category_list_to_str(category)
+        limit = self.__validate_limit(limit)
+
+        # initialize a list to store the details
         token_detail_list = []
+
+        # variables for scraping
         finished_scraping = False
+        page_index = 1
+        scraped_count = 1
+
         while not finished_scraping:
+
+            # make GET request to the API endpoint
             api = "https://v2.gamefi.org/_next/data/05TfXTSF5_7vpLam60k8c/hub.json?category={category}&page={page_index}".format(
                 category=category, page_index=page_index)
             response = requests.get(api)
+
             if str(response.status_code) == "200":
 
                 # get the total number of pages
@@ -29,8 +56,15 @@ class GameFi_scraper:
 
                 # if the data is empty, meaning no search results is associated with the category
                 if not len(data):
-                    break
+                    finished_scraping = True
+                    continue
+
                 for index, token_iterator in enumerate(data):
+
+                    if scraped_count > limit:
+                        finished_scraping = True
+                        break
+
                     # initialize a dict to store the details
                     token = {}
 
@@ -107,6 +141,8 @@ class GameFi_scraper:
                         token_iterator, "cmc_rank")
 
                     token_detail_list.append(token)
+
+                    scraped_count += 1
 
                 if page_index == lastPage:
                     finished_scraping = True

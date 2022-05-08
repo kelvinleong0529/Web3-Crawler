@@ -31,7 +31,7 @@ class NFT_scraper_base_class:
     def remove_duplicate_in_dict_list(self, target_list: list) -> dict:
         return [dict(t) for t in {tuple(d.items()) for d in target_list}]
 
-    # function to join a list with "," and convert it to string
+    # function to join the action list with "," and merge into a string
     def action_list_to_str(self, target_list: list) -> str:
         # return empty string if the target_list is None
         if target_list is None:
