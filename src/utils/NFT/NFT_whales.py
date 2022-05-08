@@ -10,20 +10,10 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__whales_api = "https://api.nftbase.com/web/api/v1/home/list-v3?home_tab={feature}&action={action}&price={price_range}&offset={offset}&limit={limit_per_page}"
+        self.__whales_api = "https://api.nftbase.com/web/api/v1/home/list-v3?home_tab={feature}&action={action_list}&price={price_range}&offset={offset}&limit={limit_per_page}"
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
-
-    def __list_to_str(self, target_list: list) -> str:
-        # return empty string if the target_list is None
-        if target_list is None:
-            return ""
-        if not isinstance(target_list, list):
-            raise TypeError("You should pass a LIST of actions")
-        # remove any trailing whitespace and capitilize the first letter of each element in the list
-        target_list = [data.strip().capitalize() for data in target_list]
-        return ",".join(target_list)
 
     # function to validate the "price_range" input parameter
     def __validate_price_range(self, price_range: int) -> str:
@@ -34,8 +24,8 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         return str(price_range)
 
     # function to scrape the nfts based on the input feature
-    def __get_featured_nft(self, feature: str, action: list, price_range: int,
-                           limit_per_page: int, limit: int,
+    def __get_featured_nft(self, feature: str, action_list: list,
+                           price_range: int, limit_per_page: int, limit: int,
                            proxy_lum: dict) -> list:
 
         featured_nft_list = []
@@ -44,7 +34,7 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)
-        action = self.__list_to_str(target_list=action)
+        action_list = super().action_list_to_str(action_list=action_list)
         price_range = self.__validate_price_range(price_range=price_range)
 
         # variables for scraping
@@ -56,7 +46,7 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
 
             # make GET request to the API endpoint
             api = self.__whales_api.format(feature=feature,
-                                           action=action,
+                                           action_list=action_list,
                                            price_range=price_range,
                                            offset=offset,
                                            limit_per_page=limit_per_page)
@@ -119,7 +109,7 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         return featured_nft_list
 
     def get_whales_smart_money(self,
-                               action: list = None,
+                               action_list: list = None,
                                price_range: int = None,
                                limit_per_page: int = None,
                                limit: int = None,
@@ -127,14 +117,14 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         FEATURE = "Smart+Money"
 
         return self.__get_featured_nft(feature=FEATURE,
-                                       action=action,
+                                       action_list=action_list,
                                        price_range=price_range,
                                        limit_per_page=limit_per_page,
                                        limit=limit,
                                        proxy_lum=proxy_lum)
 
     def get_whales_crypto_punks(self,
-                                action: list = None,
+                                action_list: list = None,
                                 price_range: int = None,
                                 limit_per_page: int = None,
                                 limit: int = None,
@@ -142,14 +132,14 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         FEATURE = "CryptoPunks"
 
         return self.__get_featured_nft(feature=FEATURE,
-                                       action=action,
+                                       action_list=action_list,
                                        price_range=price_range,
                                        limit_per_page=limit_per_page,
                                        limit=limit,
                                        proxy_lum=proxy_lum)
 
     def get_whales_famous(self,
-                          action: list = None,
+                          action_list: list = None,
                           price_range: int = None,
                           limit_per_page: int = None,
                           limit: int = None,
@@ -157,14 +147,14 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         FEATURE = "Famous"
 
         return self.__get_featured_nft(feature=FEATURE,
-                                       action=action,
+                                       action_list=action_list,
                                        price_range=price_range,
                                        limit_per_page=limit_per_page,
                                        limit=limit,
                                        proxy_lum=proxy_lum)
 
     def get_whales_art_blocks(self,
-                              action: list = None,
+                              action_list: list = None,
                               price_range: int = None,
                               limit_per_page: int = None,
                               limit: int = None,
@@ -172,14 +162,14 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         FEATURE = "Art+Blocks"
 
         return self.__get_featured_nft(feature=FEATURE,
-                                       action=action,
+                                       action_list=action_list,
                                        price_range=price_range,
                                        limit_per_page=limit_per_page,
                                        limit=limit,
                                        proxy_lum=proxy_lum)
 
     def get_whales_bored_ape_yacht_club(self,
-                                        action: list = None,
+                                        action_list: list = None,
                                         price_range: int = None,
                                         limit_per_page: int = None,
                                         limit: int = None,
@@ -187,7 +177,7 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         FEATURE = "BoredApeYachtClub"
 
         return self.__get_featured_nft(feature=FEATURE,
-                                       action=action,
+                                       action_list=action_list,
                                        price_range=price_range,
                                        limit_per_page=limit_per_page,
                                        limit=limit,

@@ -8,12 +8,9 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__get_user_id_api = "https://api.nftbase.com/web/api/v1/user/info/address?address={address}"
+        self.__user_details_api = "https://api.nftbase.com/web/api/v1/user/info/address?address={address}"
         self.user_api = "https://api.nftbase.com/web/api/v1/user/{feature}?user_id={{user_id}}&offset={{offset}}&limit={{limit_per_page}}"
         self.__user_details = {}
-
-    def get_value(self, input_dict: dict, key: str) -> str:
-        return super().get_value(input_dict, key)
 
     def get_sort_option(self, sort_option: str) -> int:
 
@@ -38,7 +35,7 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
         if not isinstance(user_address, str):
             raise TypeError("user_address argument must be a STRING type")
 
-        api = self.__get_user_id_api.format(address=user_address)
+        api = self.__user_details_api.format(address=user_address)
         user_id = None
         response = requests.get(api, proxies=proxy_lum)
         if str(response.status_code) == "200":
@@ -52,7 +49,7 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
         # reset the dictionary
         self.__user_details.clear()
 
-        api = self.__get_user_id_api.format(address=user_address)
+        api = self.__user_details_api.format(address=user_address)
         response = requests.get(api, proxies=proxy_lum)
         if str(response.status_code) == "200":
             response = response.json()
@@ -84,7 +81,8 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/user/gallery?user_id={user_id}&offset={offset}&limit={limit_per_page}&sort={sort_option}"
+        self.__api = self.user_api.format(
+            feature="gallery") + "&sort={sort_option}"
         self.__user_gallery_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -172,7 +170,8 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = self.user_api.format(feature="collection")
+        self.__api = self.user_api.format(
+            feature="collection") + "&sort={sort_option}"
         self.__user_collection_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -207,7 +206,8 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
             # make GET request to the API endpoint
             api = self.__api.format(user_id=user_id,
                                     offset=offset,
-                                    limit_per_page=limit_per_page)
+                                    limit_per_page=limit_per_page,
+                                    sort_option=sort_option)
             response = requests.get(api, proxies=proxy_lum)
 
             # if the request is successful
@@ -279,7 +279,8 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = self.user_api.format(feature="activities")
+        self.__api = self.user_api.format(
+            feature="activities") + "&action={action_list}"
         self.__user_activity_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -287,12 +288,19 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
 
     def get_user_activity(self,
                           user_address: str,
+                          action_list: list = None,
                           limit_per_page: int = None,
                           limit: int = None,
                           proxy_lum: dict = None) -> list:
 
         # empty the return list
         self.__user_activity_list.clear()
+
+        # validate the input parameters
+        limit_per_page = super().validate_limit_per_page(
+            limit_per_page=limit_per_page)
+        limit = super().validate_limit(limit=limit)
+        action_list = super().action_list_to_str(taget_list=action_list)
 
         # retrieve the user id from user address
         user_id = super().get_user_id_by_address(user_address)
@@ -307,7 +315,8 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
             # make GET request to the API endpoint
             api = self.__api.format(user_id=user_id,
                                     offset=offset,
-                                    limit_per_page=limit_per_page)
+                                    limit_per_page=limit_per_page,
+                                    action_list=action_list)
             response = requests.get(api, proxies=proxy_lum)
 
             # if the request is successful

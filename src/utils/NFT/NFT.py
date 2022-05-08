@@ -20,6 +20,6 @@ NFT_scraper().scraper_info()
 results = my_NFT_scraper.get_user_gallery(
     limit=5,
     user_address="0x6639c089adfba8bb9968da643c6be208a70d6daa",
-    sort_option=[" Market Cap"])
+    sort_option="Market Cap")
 for result in results:
     print(result)
