@@ -1,3 +1,5 @@
+from gc import collect
+from typing import Type
 import requests
 
 from NFT_scraper_base_class import NFT_scraper_base_class
@@ -11,6 +13,12 @@ class NFT_scraper_collection_base_class(NFT_scraper_base_class):
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
+
+    def validate_collection_id(self, collection_id: str) -> str:
+        if not isinstance(collection_id, str):
+            raise TypeError("collection_id argument must be STRING type")
+
+        return collection_id.strip()
 
 
 class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
@@ -26,12 +34,18 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
     # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
     def get_collection_activity(self,
                                 collection_id: str,
-                                limit_per_page: int = 20,
-                                limit: int = 50,
+                                limit_per_page: int = None,
+                                limit: int = None,
                                 proxy_lum: dict = None) -> list:
 
         # empty the return list
         self.__collection_activity_list.clear()
+
+        # validate the input parameters
+        collection_id = super().validate_collection_id(collection_id)
+        limit_per_page = super().validate_limit_per_page(
+            limit_per_page=limit_per_page)
+        limit = super().validate_limit(limit=limit)
 
         # variables for scraping
         finished_scraping = False
@@ -43,7 +57,8 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
             # make GET request to the API endpoint
             api = self.collection_api.format(feature=self.__FEATURE,
                                              collection_id=collection_id,
-                                             limit_per_page=limit_per_page)
+                                             limit_per_page=limit_per_page,
+                                             offset=offset)
             response = requests.get(api, proxies=proxy_lum)
 
             # if the request is successful
@@ -132,6 +147,9 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
         # empty the return list
         self.__collection_details.clear()
 
+        # validate the input parameters
+        collection_id = super().validate_collection_id(collection_id)
+
         # make GET request to the API endpoint
         api = self.__api.format(collection_id=collection_id)
         response = requests.get(api, proxies=proxy_lum)
@@ -193,12 +211,18 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
 
     def get_collection_asset(self,
                              collection_id: str,
-                             limit_per_page: int = 20,
-                             limit: int = 50,
+                             limit_per_page: int = None,
+                             limit: int = None,
                              proxy_lum: dict = None) -> list:
 
         # empty the return list
         self.__collection_asset_list.clear()
+
+        # validate the input parameters
+        collection_id = super().validate_collection_id(collection_id)
+        limit_per_page = super().validate_limit_per_page(
+            limit_per_page=limit_per_page)
+        limit = super().validate_limit(limit=limit)
 
         # variables for scraping
         finished_scraping = False
@@ -283,12 +307,18 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
 
     def get_collection_holder(self,
                               collection_id: str,
-                              limit_per_page: int = 20,
-                              limit: int = 50,
+                              limit_per_page: int = None,
+                              limit: int = None,
                               proxy_lum: dict = None) -> list:
 
         # empty the return list
         self.__collection_holders_list.clear()
+
+        # validate the input parameters
+        collection_id = super().validate_collection_id(collection_id)
+        limit_per_page = super().validate_limit_per_page(
+            limit_per_page=limit_per_page)
+        limit = super().validate_limit(limit=limit)
 
         # variables for scraping
         finished_scraping = False

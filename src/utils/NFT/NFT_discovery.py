@@ -14,6 +14,11 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
 
         featured_nft_list = []
 
+        # validate the input parameters
+        limit_per_page = super().validate_limit_per_page(
+            limit_per_page=limit_per_page)
+        limit = super().validate_limit(limit=limit)
+
         # variables for scraping
         finished_scraping = False
         offset = 0
