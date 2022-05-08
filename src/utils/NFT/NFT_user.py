@@ -69,7 +69,7 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                          limit_per_page: int = 20,
                          limit: int = 50) -> list:
 
-        # empty the return activity list
+        # empty the return list
         self.__user_gallery_list.clear()
 
         # retrieve the user id from user address
@@ -140,7 +140,7 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                             limit_per_page: int = 20,
                             limit: int = 50) -> list:
 
-        # empty the return activity list
+        # empty the return list
         self.__user_collection_list.clear()
 
         # retrieve the user id from user address
@@ -228,7 +228,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                           limit_per_page: int = 20,
                           limit: int = 50) -> list:
 
-        # empty the return activity list
+        # empty the return list
         self.__user_activity_list.clear()
 
         # retrieve the user id from user address

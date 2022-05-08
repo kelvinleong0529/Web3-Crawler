@@ -7,7 +7,7 @@ class NFT_scraper_collection_base_class(NFT_scraper_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.base_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={{collection_id}}&limit={{limit_per_page}}&offset={{offset}}"
+        self.base_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
@@ -17,7 +17,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = self.base_api.format(feature="activities")
+        self.__FEATURE = "activities"
         self.__collection_activity_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -29,7 +29,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                                 limit_per_page: int = 20,
                                 limit: int = 50) -> list:
 
-        # empty the return activity list
+        # empty the return list
         self.__collection_activity_list.clear()
 
         # variables for scraping
@@ -39,8 +39,9 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
         while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
-            api = self.__api.format(collection_id=collection_id,
-                                    limit_per_page=limit_per_page)
+            api = self.base_api.format(feature=self.__FEATURE,
+                                       collection_id=collection_id,
+                                       limit_per_page=limit_per_page)
             response = requests.get(api)
 
             # if the request is successful
@@ -109,7 +110,7 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = self.__api = self.base_api.format(feature="detail")
+        self.__api = "https://api.nftbase.com/web/api/v1/collection/detail?collection_id={collection_id}"
         self.__collection_details = {}
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -118,7 +119,7 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
     # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
     def get_collection_detail(self, collection_id: str) -> dict:
 
-        # empty the return activity list
+        # empty the return list
         self.__collection_details.clear()
 
         # make GET request to the API endpoint
@@ -185,7 +186,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
                              limit_per_page: int = 20,
                              limit: int = 50) -> list:
 
-        # empty the return activity list
+        # empty the return list
         self.__collection_asset_list.clear()
 
         # variables for scraping
@@ -256,7 +257,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = self.base_api.format(feature="holders")
+        self.__FEATURE = "holders"
         self.__collection_holders_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -267,7 +268,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
                               limit_per_page: int = 20,
                               limit: int = 50) -> list:
 
-        # empty the return activity list
+        # empty the return list
         self.__collection_holders_list.clear()
 
         # variables for scraping
@@ -277,9 +278,10 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
         while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
-            api = self.__api.format(collection_id=collection_id,
-                                    limit_per_page=limit_per_page,
-                                    offset=offset)
+            api = self.base_api.format(feature=self.__FEATURE,
+                                       collection_id=collection_id,
+                                       limit_per_page=limit_per_page,
+                                       offset=offset)
             response = requests.get(api)
 
             # if the request is successful
