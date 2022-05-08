@@ -36,6 +36,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
         # variables for scraping
         finished_scraping = False
         offset = 0
+        scraped_count = 1
 
         while offset <= limit and not finished_scraping:
 
@@ -55,6 +56,10 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                     continue
 
                 for collection_activities in data:
+
+                    if scraped_count > limit:
+                        break
+
                     # initialize a dict to store the details
                     collection_activity = {}
 
@@ -101,6 +106,8 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                         seller, "is_whale")
 
                     self.__collection_activity_list.append(collection_activity)
+
+                    scraped_count += 1
 
                 offset += limit_per_page
 
@@ -196,6 +203,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
         # variables for scraping
         finished_scraping = False
         offset = 0
+        scraped_count = 1
 
         while offset <= limit and not finished_scraping:
 
@@ -216,9 +224,13 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
 
                 for edge in edges:
 
-                    asset = edge["node"]["asset"]
+                    if scraped_count > limit:
+                        break
 
+                    # initialize a dict to store the details
                     collection_asset = {}
+
+                    asset = edge["node"]["asset"]
 
                     # collection asset details
                     collection_asset["name"] = self.get_value(asset, "name")
@@ -252,7 +264,9 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
 
                     self.__collection_asset_list.append(collection_asset)
 
-            offset += limit_per_page
+                    scraped_count += 1
+
+                offset += limit_per_page
 
         return self.__collection_asset_list
 
@@ -279,6 +293,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
         # variables for scraping
         finished_scraping = False
         offset = 0
+        scraped_count = 1
 
         while offset <= limit and not finished_scraping:
 
@@ -300,11 +315,13 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
 
                 for users in data:
 
-                    user = users["user"]
+                    if scraped_count > limit:
+                        break
 
                     collection_holder = {}
 
                     # collection holder details
+                    user = users["user"]
                     collection_holder["name"] = self.get_value(user, "name")
                     collection_holder["id"] = self.get_value(user, "id")
                     collection_holder["address"] = self.get_value(
@@ -317,7 +334,9 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
 
                     self.__collection_holders_list.append(collection_holder)
 
-            offset += limit_per_page
+                    scraped_count += 1
+
+                offset += limit_per_page
 
         return self.__collection_holders_list
 

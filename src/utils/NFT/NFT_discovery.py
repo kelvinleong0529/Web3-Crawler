@@ -8,8 +8,6 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
     def __init__(self) -> None:
         super().__init__()
         self.extra_features_api = "https://api.nftbase.com/web/api/v1/home/list?name={feature}&limit={limit_per_page}&offset={offset}"
-        self.LIMIT_PER_PAGE = 20
-        self.LIMIT = 50
 
     def __get_featured_nft(self, feature: str, limit_per_page: int, limit: int,
                            proxy_lum: dict) -> list:
@@ -19,6 +17,9 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
         # variables for scraping
         finished_scraping = False
         offset = 0
+        scraped_count = 1
+
+        # scraping parameters
         limit_per_page = limit_per_page if limit_per_page else self.LIMIT_PER_PAGE
         limit = limit if limit else self.LIMIT
 
@@ -40,16 +41,20 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
                     continue
 
                 for nfts in data:
+
+                    if scraped_count > limit:
+                        break
+
                     # initialize a dict to store the details
                     featured_nft = {}
 
-                    # hot selling featured_nft basic details
+                    # featured nft basic details
                     featured_nft["id"] = self.get_value(nfts, "id")
                     featured_nft["name"] = self.get_value(nfts, "name")
                     featured_nft["image_url"] = self.get_value(
                         nfts, "image_url")
 
-                    # hot selling featured_nft transaction details
+                    # featured nft transaction details
                     featured_nft["floor_price"] = self.get_value(
                         nfts, "floor_price")
                     featured_nft["minters"] = self.get_value(nfts, "minters")
@@ -69,6 +74,8 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
                         nfts, "volume_total")
 
                     featured_nft_list.append(featured_nft)
+
+                    scraped_count += 1
 
                 offset += limit_per_page
 

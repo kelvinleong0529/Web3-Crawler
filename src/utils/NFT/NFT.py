@@ -1,10 +1,11 @@
 from NFT_collection import NFT_scraper_collection_class
 from NFT_user import NFT_scraper_user_class
 from NFT_discovery import NFT_scraper_extra_feature_class
+from NFT_whales import NFT_scraper_whale_class
 
 
 class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class,
-                  NFT_scraper_extra_feature_class):
+                  NFT_scraper_extra_feature_class, NFT_scraper_whale_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -16,26 +17,6 @@ class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class,
 
 my_NFT_scraper = NFT_scraper()
 NFT_scraper().scraper_info()
-# results = my_NFT_scraper.get_user_id(
-#     user_address="0x4bbb41f61fffc1bbe65a2aa192c65281e16ea758")
-# print(results)
-# print(my_NFT_scraper.get_collection_detail("makoto-samurais"))
-# print(
-#     my_NFT_scraper.get_user_gallery(
-#         user_address="0x41e22215f10634893c3231ec9562054bca9d2d74", limit=1))
-# print('------------------------------------------------------------')
-# print(
-#     my_NFT_scraper.get_user_collection(
-#         user_address="0x41e22215f10634893c3231ec9562054bca9d2d74", limit=2))
-# print('------------------------------------------------------------')
-# print(
-#     my_NFT_scraper.get_user_details(
-#         user_address="0x41e22215f10634893c3231ec9562054bca9d2d74"))
-# print('------------------------------------------------------------')
-# print(
-#     my_NFT_scraper.get_user_activity(
-#         user_address="0x41e22215f10634893c3231ec9562054bca9d2d74"))
-
-# api = "https://api.nftbase.com/web/api/v1/user/gallery?user_id=4337377&offset=0&limit=30"
-# response = requests.get(api)
-# print(response.json())
+results = my_NFT_scraper.get_collection_asset(collection_id="the-forgotten-cult-oracles",limit=6)
+for result in results:
+    print(result)

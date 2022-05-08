@@ -4,7 +4,8 @@ import datetime
 class NFT_scraper_base_class:
 
     def __init__(self) -> None:
-        pass
+        self.LIMIT_PER_PAGE = 20
+        self.LIMIT = 50
 
     def get_value(self, input_dict: dict, key: str) -> str:
         if isinstance(input_dict, dict):

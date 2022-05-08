@@ -14,7 +14,9 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
 
-    def get_user_id(self, user_address: str, proxy_lum: dict = None) -> str:
+    def get_user_id_by_address(self,
+                               user_address: str,
+                               proxy_lum: dict = None) -> str:
         api = self.__get_user_id_api.format(address=user_address)
         user_id = None
         response = requests.get(api, proxies=proxy_lum)
@@ -77,11 +79,12 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
         self.__user_gallery_list.clear()
 
         # retrieve the user id from user address
-        user_id = super().get_user_id(user_address)
+        user_id = super().get_user_id_by_address(user_address)
 
         # variables for scraping
         finished_scraping = False
         offset = 0
+        scraped_count = 1
 
         while offset <= limit and not finished_scraping:
 
@@ -101,6 +104,10 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                     continue
 
                 for user_galleries in data:
+
+                    if scraped_count > limit:
+                        break
+
                     # initialize a dict to store the details
                     user_gallery = {}
 
@@ -122,7 +129,10 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
 
                     # append the result into the list and increment the offset value by 1
                     self.__user_gallery_list.append(user_gallery)
-                    offset += limit_per_page
+
+                    scraped_count += 1
+
+                offset += limit_per_page
 
         self.__user_gallery_list = super().remove_duplicate(
             self.__user_gallery_list)
@@ -149,11 +159,12 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
         self.__user_collection_list.clear()
 
         # retrieve the user id from user address
-        user_id = super().get_user_id(user_address)
+        user_id = super().get_user_id_by_address(user_address)
 
         # variables for scraping
         finished_scraping = False
         offset = 0
+        scraped_count = 1
 
         while offset <= limit and not finished_scraping:
 
@@ -173,10 +184,14 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                     continue
 
                 for user_collections in data:
+
+                    if scraped_count > limit:
+                        break
+
                     # initialize a dict to store the details
                     user_base_collection = {}
 
-                    # NFT collection details
+                    # NFT collection basic details
                     user_base_collection["collection_name"] = self.get_value(
                         user_collections, "collection_name")
                     user_base_collection["collection_id"] = self.get_value(
@@ -190,9 +205,13 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                         user_collections, "change_in_24h")
 
                     items = self.get_value(user_collections, "items")
+
                     for item in items:
+
                         # make a copy of the base collection
                         user_collection = user_base_collection.copy()
+
+                        # NFT collection details
                         user_collection["id"] = self.get_value(item, "id")
                         user_collection["image_url"] = self.get_value(
                             item, "image_url")
@@ -211,7 +230,9 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                         # append the result into the list and increment the offset value by 1
                         self.__user_collection_list.append(user_collection)
 
-                    offset += limit_per_page
+                        scraped_count += 1
+
+                offset += limit_per_page
 
         self.__user_collection_list = super().remove_duplicate(
             self.__user_collection_list)
@@ -238,11 +259,12 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
         self.__user_activity_list.clear()
 
         # retrieve the user id from user address
-        user_id = super().get_user_id(user_address)
+        user_id = super().get_user_id_by_address(user_address)
 
         # variables for scraping
         finished_scraping = False
         offset = 0
+        scraped_count = 1
 
         while offset <= limit and not finished_scraping:
 
@@ -262,6 +284,10 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                     continue
 
                 for user_activities in data:
+
+                    if scraped_count > limit:
+                        break
+
                     # initialize a dict to store the details
                     user_activity = {}
 
@@ -301,7 +327,9 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                     # append the result into the list and increment the offset value by 1
                     self.__user_activity_list.append(user_activity)
 
-                    offset += limit_per_page
+                    scraped_count += 1
+
+                offset += limit_per_page
 
         self.__user_activity_list = super().remove_duplicate(
             self.__user_activity_list)
