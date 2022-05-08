@@ -15,10 +15,10 @@ class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class,
 
 
 my_NFT_scraper = NFT_scraper()
-my_NFT_scraper.scraper_info()
-results = my_NFT_scraper.get_user_id(
-    user_address="0x4bbb41f61fffc1bbe65a2aa192c65281e16ea758")
-print(results)
+NFT_scraper().scraper_info()
+# results = my_NFT_scraper.get_user_id(
+#     user_address="0x4bbb41f61fffc1bbe65a2aa192c65281e16ea758")
+# print(results)
 # print(my_NFT_scraper.get_collection_detail("makoto-samurais"))
 # print(
 #     my_NFT_scraper.get_user_gallery(

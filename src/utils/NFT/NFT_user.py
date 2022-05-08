@@ -30,7 +30,7 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
         self.__user_details.clear()
 
         api = self.__get_user_id_api.format(address=user_address)
-        response = response = requests.get(api, proxies=proxy_lum)
+        response = requests.get(api, proxies=proxy_lum)
         if str(response.status_code) == "200":
             response = response.json()
             data = response["data"]
@@ -89,7 +89,7 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
             api = self.__api.format(user_id=user_id,
                                     offset=offset,
                                     limit_per_page=limit_per_page)
-            response = response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -161,7 +161,7 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
             api = self.__api.format(user_id=user_id,
                                     offset=offset,
                                     limit_per_page=limit_per_page)
-            response = response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -250,7 +250,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
             api = self.__api.format(user_id=user_id,
                                     offset=offset,
                                     limit_per_page=limit_per_page)
-            response = response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
