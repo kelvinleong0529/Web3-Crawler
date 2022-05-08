@@ -1,6 +1,4 @@
 import datetime
-from multiprocessing.sharedctypes import Value
-
 
 class NFT_scraper_base_class:
 

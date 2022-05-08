@@ -1,6 +1,3 @@
-from msilib.schema import Error
-from weakref import proxy
-from numpy import isin
 import requests
 
 from NFT_scraper_base_class import NFT_scraper_base_class

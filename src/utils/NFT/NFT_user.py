@@ -1,4 +1,3 @@
-from msilib.schema import Error
 import requests
 
 from NFT_scraper_base_class import NFT_scraper_base_class

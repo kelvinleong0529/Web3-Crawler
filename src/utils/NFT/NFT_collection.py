@@ -1,5 +1,3 @@
-from gc import collect
-from typing import Type
 import requests
 
 from NFT_scraper_base_class import NFT_scraper_base_class
