@@ -1,14 +1,23 @@
 import requests
-import datetime
 
 from NFT_scraper_base_class import NFT_scraper_base_class
 
 
-class NFT_scraper_collection_activity(NFT_scraper_base_class):
+class NFT_scraper_collection_base_class(NFT_scraper_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/collection/activities?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
+        self.base_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={{collection_id}}&limit={{limit_per_page}}&offset={{offset}}"
+
+    def get_value(self, input_dict: dict, key: str) -> str:
+        return super().get_value(input_dict, key)
+
+
+class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.__api = self.base_api.format(feature="activities")
         self.__collection_activity_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -55,13 +64,9 @@ class NFT_scraper_collection_activity(NFT_scraper_base_class):
                             collection_activities, "symbol")
                     collection_activity["action"] = self.get_value(
                         collection_activities, "action")
-                    collection_activity["timestamp"] = self.get_value(
-                        collection_activities, "timestamp")
-                    if collection_activity["timestamp"] != "N/A":
-                        collection_activity[
-                            "timestamp"] = datetime.datetime.utcfromtimestamp(
-                                int(collection_activity["timestamp"])
-                            ).strftime('%Y-%m-%d %H:%M:%S')
+                    collection_activity["timestamp"] = super(
+                    ).utc_from_timestamp(
+                        self.get_value(collection_activities, "timestamp"))
 
                     # NFT details
                     item_details = self.get_value(collection_activities,
@@ -100,11 +105,11 @@ class NFT_scraper_collection_activity(NFT_scraper_base_class):
         return self.__collection_activity_list
 
 
-class NFT_scraper_collection_detail(NFT_scraper_base_class):
+class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/collection/detail?collection_id={collection_id}"
+        self.__api = self.__api = self.base_api.format(feature="detail")
         self.__collection_details = {}
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -165,7 +170,7 @@ class NFT_scraper_collection_detail(NFT_scraper_base_class):
         return self.__collection_details
 
 
-class NFT_scraper_collection_asset(NFT_scraper_base_class):
+class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -222,17 +227,17 @@ class NFT_scraper_collection_asset(NFT_scraper_base_class):
                     # collection asset transaction details
                     order_data = self.get_value(asset, "orderData")
                     best_ask = self.get_value(order_data, "bestAsk")
-                    maker = self.get_value(order_data, "maker")
+                    maker = self.get_value(best_ask, "maker")
                     payment_asset_quantity = self.get_value(
-                        order_data, "paymentAssetQuantity")
+                        best_ask, "paymentAssetQuantity")
                     payment_asset_details = self.get_value(
                         payment_asset_quantity, "asset")
 
                     # collection asset transaction details
                     collection_asset["opened_timestamp"] = self.get_value(
-                        maker, "openedAt")
+                        best_ask, "openedAt")
                     collection_asset["order_type"] = self.get_value(
-                        maker, "orderType")
+                        best_ask, "orderType")
                     collection_asset["purchased_timestamp"] = self.get_value(
                         best_ask, "closedAt")
                     collection_asset["buyer_address"] = self.get_value(
@@ -247,17 +252,73 @@ class NFT_scraper_collection_asset(NFT_scraper_base_class):
         return self.__collection_asset_list
 
 
-class NFT_scraper_collection_class(NFT_scraper_collection_activity,
-                                   NFT_scraper_collection_detail,NFT_scraper_collection_asset):
+class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
+        self.__api = self.base_api.format(feature="holders")
+        self.__collection_holders_list = []
 
-    def get_collection_detail(self, collection_id: str) -> dict:
-        return super().get_collection_detail(collection_id)
+    def get_value(self, input_dict: dict, key: str) -> str:
+        return super().get_value(input_dict, key)
 
-    def get_collection_activity(self, collection_id: str, limit_per_page: int = 20, limit: int = 50) -> list:
-        return super().get_collection_activity(collection_id, limit_per_page, limit)
+    def get_collection_holder(self,
+                              collection_id: str,
+                              limit_per_page: int = 20,
+                              limit: int = 50) -> list:
 
-    def get_collection_asset(self, collection_id: str, limit_per_page: int = 20, limit: int = 50) -> list:
-        return super().get_collection_asset(collection_id, limit_per_page, limit)
+        # empty the return activity list
+        self.__collection_holders_list.clear()
+
+        # variables for scraping
+        finished_scraping = False
+        offset = 0
+
+        while offset <= limit and not finished_scraping:
+
+            # make GET request to the API endpoint
+            api = self.__api.format(collection_id=collection_id,
+                                    limit_per_page=limit_per_page,
+                                    offset=offset)
+            response = requests.get(api)
+
+            # if the request is successful
+            if str(response.status_code) == "200":
+                data = response.json()["data"]
+
+                # if the response returns blank or empty data, break the loop
+                if not data:
+                    finished_scraping = True
+                    continue
+
+                for users in data:
+
+                    user = users["user"]
+
+                    collection_holder = {}
+
+                    # collection holder details
+                    collection_holder["name"] = self.get_value(user, "name")
+                    collection_holder["id"] = self.get_value(user, "id")
+                    collection_holder["address"] = self.get_value(
+                        user, "address")
+                    collection_holder["avatar_url"] = self.get_value(
+                        user, "avatar_url")
+                    collection_holder["count"] = self.get_value(users, "Count")
+                    collection_holder["is_whale"] = self.get_value(
+                        users, "is_whale")
+
+                    self.__collection_holders_list.append(collection_holder)
+
+            offset += limit_per_page
+
+        return self.__collection_holders_list
+
+
+class NFT_scraper_collection_class(NFT_scraper_collection_activity,
+                                   NFT_scraper_collection_detail,
+                                   NFT_scraper_collection_asset,
+                                   NFT_scraper_collection_holder):
+
+    def __init__(self) -> None:
+        super().__init__()

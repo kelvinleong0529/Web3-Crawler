@@ -1,14 +1,14 @@
 import requests
-import datetime
 
 from NFT_scraper_base_class import NFT_scraper_base_class
 
 
-class NFT_scraper_user_details(NFT_scraper_base_class):
+class NFT_scraper_user_base_class(NFT_scraper_base_class):
 
     def __init__(self) -> None:
         super().__init__()
         self.__get_user_id_api = "https://api.nftbase.com/web/api/v1/user/info/address?address={address}"
+        self.base_api = "https://api.nftbase.com/web/api/v1/user/{feature}?user_id={{user_id}}&offset={{offset}}&limit={{limit_per_page}}"
         self.__user_details = {}
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -54,11 +54,11 @@ class NFT_scraper_user_details(NFT_scraper_base_class):
         return self.__user_details
 
 
-class NFT_scraper_user_gallery(NFT_scraper_user_details):
+class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/user/gallery?user_id={user_id}&offset={offset}&limit={limit_per_page}"
+        self.__api = self.base_api.format(feature="gallery")
         self.__user_gallery_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -125,11 +125,11 @@ class NFT_scraper_user_gallery(NFT_scraper_user_details):
         return self.__user_gallery_list
 
 
-class NFT_scraper_user_collection(NFT_scraper_user_details):
+class NFT_scraper_user_collection(NFT_scraper_user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/user/collection?user_id={user_id}&offset={offset}&limit={limit_per_page}"
+        self.__api = self.base_api.format(feature="collection")
         self.__user_collection_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -213,11 +213,11 @@ class NFT_scraper_user_collection(NFT_scraper_user_details):
         return self.__user_collection_list
 
 
-class NFT_scraper_user_activity(NFT_scraper_user_details):
+class NFT_scraper_user_activity(NFT_scraper_user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/user/activities?user_id={user_id}&offset={offset}&limit={limit_per_page}"
+        self.__api = self.base_api.format(feature="activities")
         self.__user_activity_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
@@ -276,13 +276,8 @@ class NFT_scraper_user_activity(NFT_scraper_user_details):
                     user_activity["id"] = self.get_value(user_activities, "id")
                     user_activity["token_id"] = self.get_value(
                         user_activities, "token_id")
-                    user_activity["timestamp"] = self.get_value(
-                        user_activities, "timestamp")
-                    if user_activity["timestamp"] != "N/A":
-                        user_activity[
-                            "timestamp"] = datetime.datetime.utcfromtimestamp(
-                                int(user_activity["timestamp"])).strftime(
-                                    '%Y-%m-%d %H:%M:%S')
+                    user_activity["timestamp"] = super().utc_from_timestamp(
+                        self.get_value(user_activities, "timestamp"))
                     price = self.get_value(user_activities, "price")
                     currency = self.get_value(user_activities, "symbol")
                     user_activity["price"] = price + " " + currency
@@ -313,24 +308,3 @@ class NFT_scraper_user_class(NFT_scraper_user_collection,
 
     def __init__(self) -> None:
         super().__init__()
-
-    def get_user_details(self, user_address: str) -> dict:
-        return super().get_user_details(user_address)
-
-    def get_user_gallery(self,
-                         user_address: str,
-                         limit_per_page: int = 20,
-                         limit: int = 50) -> list:
-        return super().get_user_gallery(user_address, limit_per_page)
-
-    def get_user_collection(self,
-                            user_address: str,
-                            limit_per_page: int = 20,
-                            limit: int = 50) -> list:
-        return super().get_user_collection(user_address, limit_per_page)
-
-    def get_user_activity(self,
-                          user_address: str,
-                          limit_per_page: int = 20,
-                          limit: int = 50) -> list:
-        return super().get_user_activity(user_address, limit_per_page)

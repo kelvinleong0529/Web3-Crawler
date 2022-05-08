@@ -1,40 +1,11 @@
-from NFT_collection_classes import NFT_scraper_collection_class
-from NFT_user_classes import NFT_scraper_user_class
+from NFT_collection import NFT_scraper_collection_class
+from NFT_user import NFT_scraper_user_class
 
 
 class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class):
 
     def __init__(self) -> None:
         super().__init__()
-
-    # NFT collection methods
-    def get_collection_activity(self,
-                                collection_id: str,
-                                limit: int = 20) -> list:
-        return super().get_collection_activity(collection_id, limit)
-
-    def get_collection_detail(self, collection_id: str) -> dict:
-        return super().get_collection_detail(collection_id)
-
-    def get_collection_asset(self,
-                             collection_id: str,
-                             limit_per_page: int = 20,
-                             limit: int = 50) -> list:
-        return super().get_collection_asset(collection_id, limit_per_page,
-                                            limit)
-
-    # NFT user methods
-    def get_user_details(self, user_address: str) -> dict:
-        return super().get_user_details(user_address)
-
-    def get_user_gallery(self, user_address: str, limit: int = 20) -> list:
-        return super().get_user_gallery(user_address, limit)
-
-    def get_user_collection(self, user_address: str, limit: int = 20) -> list:
-        return super().get_user_collection(user_address, limit)
-
-    def get_user_activity(self, user_address: str, limit: int = 20) -> list:
-        return super().get_user_activity(user_address, limit)
 
     @staticmethod
     def scraper_info():
@@ -43,9 +14,8 @@ class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class):
 
 my_NFT_scraper = NFT_scraper()
 my_NFT_scraper.scraper_info()
-print(
-    my_NFT_scraper.get_collection_asset(collection_id="makoto-samurais",
-                                        limit=5))
+results = my_NFT_scraper.get_collection_detail(collection_id="makoto-samurais")
+print(results)
 # print(my_NFT_scraper.get_collection_detail("makoto-samurais"))
 # print(
 #     my_NFT_scraper.get_user_gallery(

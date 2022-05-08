@@ -3,8 +3,7 @@ import requests
 
 class honeypot_scraper:
 
-    # all the honeypot validator function returns TRUE if detect honeypot and vice-versa
-
+    # all honeypot validator functions return TRUE if detects any honeypot and vice-versa
     def __init__(self) -> None:
         self.__NETWORK_POOL = {
             "binance smart chain": {
