@@ -120,3 +120,62 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
                                        limit=limit,
                                        proxy_lum=proxy_lum)
 
+    def get_whales_crypto_punks(self,
+                                action: list = [],
+                                price_range: int = "",
+                                limit_per_page: int = None,
+                                limit: int = None,
+                                proxy_lum: dict = None) -> list:
+        FEATURE = "CryptoPunks"
+
+        return self.__get_featured_nft(feature=FEATURE,
+                                       action=action,
+                                       price_range=price_range,
+                                       limit_per_page=limit_per_page,
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
+
+    def get_whales_famous(self,
+                          action: list = [],
+                          price_range: int = "",
+                          limit_per_page: int = None,
+                          limit: int = None,
+                          proxy_lum: dict = None) -> list:
+        FEATURE = "Famous"
+
+        return self.__get_featured_nft(feature=FEATURE,
+                                       action=action,
+                                       price_range=price_range,
+                                       limit_per_page=limit_per_page,
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
+
+    def get_whales_art_blocks(self,
+                              action: list = [],
+                              price_range: int = "",
+                              limit_per_page: int = None,
+                              limit: int = None,
+                              proxy_lum: dict = None) -> list:
+        FEATURE = "Art+Blocks"
+
+        return self.__get_featured_nft(feature=FEATURE,
+                                       action=action,
+                                       price_range=price_range,
+                                       limit_per_page=limit_per_page,
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
+
+    def get_whales_bored_ape_yacht_club(self,
+                                        action: list = [],
+                                        price_range: int = "",
+                                        limit_per_page: int = None,
+                                        limit: int = None,
+                                        proxy_lum: dict = None) -> list:
+        FEATURE = "BoredApeYachtClub"
+
+        return self.__get_featured_nft(feature=FEATURE,
+                                       action=action,
+                                       price_range=price_range,
+                                       limit_per_page=limit_per_page,
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
