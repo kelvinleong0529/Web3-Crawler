@@ -7,12 +7,12 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.base_api = "https://api.nftbase.com/web/api/v1/home/list?name={feature}&limit={limit_per_page}&offset={offset}"
+        self.extra_features_api = "https://api.nftbase.com/web/api/v1/home/list?name={feature}&limit={limit_per_page}&offset={offset}"
         self.LIMIT_PER_PAGE = 20
         self.LIMIT = 50
 
-    def __get_featured_nft(self, feature: str, limit_per_page: int,
-                           limit: int) -> list:
+    def __get_featured_nft(self, feature: str, limit_per_page: int, limit: int,
+                           proxy_lum: dict) -> list:
 
         featured_nft_list = []
 
@@ -25,10 +25,10 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
         while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
-            api = self.base_api.format(feature=feature,
-                                       limit_per_page=limit_per_page,
-                                       offset=offset)
-            response = requests.get(api)
+            api = self.extra_features_api.format(feature=feature,
+                                                 limit_per_page=limit_per_page,
+                                                 offset=offset)
+            response = requests.get(api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -76,56 +76,70 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
 
     def get_hot_selling_ranking(self,
                                 limit_per_page: int = None,
-                                limit: int = None):
+                                limit: int = None,
+                                proxy_lum: dict = None):
         FEATURE = "Hot+Selling"
         return self.__get_featured_nft(feature=FEATURE,
                                        limit_per_page=limit_per_page,
-                                       limit=limit)
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
 
     def get_volume_ranking(self,
                            limit_per_page: int = None,
-                           limit: int = None):
+                           limit: int = None,
+                           proxy_lum: dict = None):
         FEATURE = "24h+Volume"
         return self.__get_featured_nft(feature=FEATURE,
                                        limit_per_page=limit_per_page,
-                                       limit=limit)
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
 
     def get_smart_money_buys_ranking(self,
                                      limit_per_page: int = None,
-                                     limit: int = None):
+                                     limit: int = None,
+                                     proxy_lum: dict = None):
         FEATURE = "Smart+Money+Buys"
         return self.__get_featured_nft(feature=FEATURE,
                                        limit_per_page=limit_per_page,
-                                       limit=limit)
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
 
     def get_hot_minting_ranking(self,
                                 limit_per_page: int = None,
-                                limit: int = None):
+                                limit: int = None,
+                                proxy_lum: dict = None):
         FEATURE = "Hot+Minting"
         return self.__get_featured_nft(feature=FEATURE,
                                        limit_per_page=limit_per_page,
-                                       limit=limit)
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
 
     def get_whales_minting_ranking(self,
                                    limit_per_page: int = None,
-                                   limit: int = None):
+                                   limit: int = None,
+                                   proxy_lum: dict = None):
         FEATURE = "Smart+Money+Mints"
         return self.__get_featured_nft(feature=FEATURE,
                                        limit_per_page=limit_per_page,
-                                       limit=limit)
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
 
     def get_gainers_ranking(self,
                             limit_per_page: int = None,
-                            limit: int = None):
+                            limit: int = None,
+                            proxy_lum: dict = None):
         FEATURE = "Gainers"
         return self.__get_featured_nft(feature=FEATURE,
                                        limit_per_page=limit_per_page,
-                                       limit=limit)
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)
 
     def get_discounts_ranking(self,
                               limit_per_page: int = None,
-                              limit: int = None):
+                              limit: int = None,
+                              proxy_lum: dict = None):
         FEATURE = "Discounts"
         return self.__get_featured_nft(feature=FEATURE,
                                        limit_per_page=limit_per_page,
-                                       limit=limit)
+                                       limit=limit,
+                                       proxy_lum=proxy_lum)

@@ -7,7 +7,7 @@ class NFT_scraper_collection_base_class(NFT_scraper_base_class):
 
     def __init__(self) -> None:
         super().__init__()
-        self.base_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
+        self.collection_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
@@ -27,7 +27,8 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
     def get_collection_activity(self,
                                 collection_id: str,
                                 limit_per_page: int = 20,
-                                limit: int = 50) -> list:
+                                limit: int = 50,
+                                proxy_lum: dict = None) -> list:
 
         # empty the return list
         self.__collection_activity_list.clear()
@@ -39,10 +40,11 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
         while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
-            api = self.base_api.format(feature=self.__FEATURE,
-                                       collection_id=collection_id,
-                                       limit_per_page=limit_per_page)
-            response = requests.get(api)
+            api = self.collection_api.format(feature=self.__FEATURE,
+                                             collection_id=collection_id,
+                                             limit_per_page=limit_per_page)
+            response = response = response = requests.get(api,
+                                                          proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -117,14 +119,16 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
         return super().get_value(input_dict, key)
 
     # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
-    def get_collection_detail(self, collection_id: str) -> dict:
+    def get_collection_detail(self,
+                              collection_id: str,
+                              proxy_lum: dict = None) -> dict:
 
         # empty the return list
         self.__collection_details.clear()
 
         # make GET request to the API endpoint
         api = self.__api.format(collection_id=collection_id)
-        response = requests.get(api)
+        response = response = response = requests.get(api, proxies=proxy_lum)
 
         # if the request is successful
         if str(response.status_code) == "200":
@@ -184,7 +188,8 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
     def get_collection_asset(self,
                              collection_id: str,
                              limit_per_page: int = 20,
-                             limit: int = 50) -> list:
+                             limit: int = 50,
+                             proxy_lum: dict = None) -> list:
 
         # empty the return list
         self.__collection_asset_list.clear()
@@ -199,7 +204,8 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
             api = self.__api.format(collection_id=collection_id,
                                     limit_per_page=limit_per_page,
                                     offset=offset)
-            response = requests.get(api)
+            response = response = response = requests.get(api,
+                                                          proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -266,7 +272,8 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
     def get_collection_holder(self,
                               collection_id: str,
                               limit_per_page: int = 20,
-                              limit: int = 50) -> list:
+                              limit: int = 50,
+                              proxy_lum: dict = None) -> list:
 
         # empty the return list
         self.__collection_holders_list.clear()
@@ -278,11 +285,12 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
         while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
-            api = self.base_api.format(feature=self.__FEATURE,
-                                       collection_id=collection_id,
-                                       limit_per_page=limit_per_page,
-                                       offset=offset)
-            response = requests.get(api)
+            api = self.collection_api.format(feature=self.__FEATURE,
+                                             collection_id=collection_id,
+                                             limit_per_page=limit_per_page,
+                                             offset=offset)
+            response = response = response = requests.get(api,
+                                                          proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":

@@ -1,8 +1,10 @@
 from NFT_collection import NFT_scraper_collection_class
 from NFT_user import NFT_scraper_user_class
+from NFT_discovery import NFT_scraper_extra_feature_class
 
 
-class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class):
+class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class,
+                  NFT_scraper_extra_feature_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -14,7 +16,8 @@ class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class):
 
 my_NFT_scraper = NFT_scraper()
 my_NFT_scraper.scraper_info()
-results = my_NFT_scraper.get_collection_detail(collection_id="makoto-samurais")
+results = my_NFT_scraper.get_user_id(
+    user_address="0x4bbb41f61fffc1bbe65a2aa192c65281e16ea758")
 print(results)
 # print(my_NFT_scraper.get_collection_detail("makoto-samurais"))
 # print(
