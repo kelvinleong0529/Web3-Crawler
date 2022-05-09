@@ -13,7 +13,7 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
 
     def get_sort_option(self, sort_option: str) -> int:
 
-        if not super().is_string(sort_option):
+        if not super().is_str(sort_option):
             raise TypeError("sort_option must be STRING type argument")
 
         # sort option list
@@ -31,12 +31,12 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
                                user_address: str,
                                proxy_lum: dict = None) -> str:
 
-        if not super().is_string(user_address):
+        if not super().is_str(user_address):
             raise TypeError("user_address argument must be a STRING type")
 
         api = self.__user_details_api.format(address=user_address)
         user_id = None
-        response = requests.get(api, proxies=proxy_lum)
+        response = requests.get(url=api, proxies=proxy_lum)
         if str(response.status_code) == "200":
             user_id = response.json()["data"]["id"]
         return user_id
@@ -49,7 +49,7 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
         self.__user_details.clear()
 
         api = self.__user_details_api.format(address=user_address)
-        response = requests.get(api, proxies=proxy_lum)
+        response = requests.get(url=api, proxies=proxy_lum)
         if str(response.status_code) == "200":
             response = response.json()
             data = response["data"]
@@ -123,7 +123,7 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                                     offset=offset,
                                     limit_per_page=limit_per_page,
                                     sort_option=sort_option)
-            response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -215,7 +215,7 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                                     offset=offset,
                                     limit_per_page=limit_per_page,
                                     sort_option=sort_option)
-            response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -311,10 +311,8 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
 
         if not super().is_list(action_list):
             raise TypeError("action_list argument must be LIST type")
-        action_list = super().strip_and_capitalize_list(
-            target_list=action_list)
         # check the action list to see if it's valid
-        super().validate_action_list(target_list=action_list)
+        super().validate_action_list(input=action_list)
         action_list = super().list_to_str(taget_list=action_list)
 
         # retrieve the user id from user address
@@ -332,7 +330,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                                     offset=offset,
                                     limit_per_page=limit_per_page,
                                     action_list=action_list)
-            response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":

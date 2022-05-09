@@ -30,13 +30,16 @@ class NFT_scraper_base_class:
         return limit
 
     # function to remove duplicates in a dictionary list
-    def remove_duplicate_in_dict_list(self, target_list: list) -> dict:
-        return [dict(t) for t in {tuple(d.items()) for d in target_list}]
+    def remove_duplicate_in_dict_list(self, input: list) -> dict:
+        return [dict(t) for t in {tuple(d.items()) for d in input}]
 
     # check and validate the action list is valid
-    def validate_action_list(self, target_list: list) -> None:
+    def validate_action_list(self, input: list) -> bool:
 
-        if not set(target_list).issubset(set(self.__ACTION_LIST)):
+        input = [self.str_strip(element) for element in input]
+        input = [self.str_capitalize(element) for element in input]
+
+        if not set(input).issubset(set(self.__ACTION_LIST)):
             raise ValueError(
                 "action_list values can only be a subset of: [buy, sell, mint, receive, send]"
             )
@@ -48,7 +51,7 @@ class NFT_scraper_base_class:
     def is_list(self, input: list) -> bool:
         return True if isinstance(input, list) else False
 
-    def is_string(self, input: str) -> bool:
+    def is_str(self, input: str) -> bool:
         return True if isinstance(input, str) else False
 
     def is_dict(self, input: dict) -> bool:
@@ -57,13 +60,18 @@ class NFT_scraper_base_class:
     def is_none(self, input: None) -> bool:
         return True if input is None else False
 
-    # remove any trailing whitespace and capitilize the first letter of each element in the list
-    def strip_and_capitalize_list(self, target_list: list) -> list:
-        return [element.strip().capitalize() for element in target_list]
+    def int_to_str(self, input: int) -> str:
+        return str(input)
+
+    def str_strip(self, input: str) -> str:
+        return input.strip()
+
+    def str_capitalize(self, input: str) -> str:
+        return input.capitalize()
 
     # function to join the target list with "," and merge into a string
-    def list_to_str(self, target_list: list) -> str:
-        return ",".join(target_list)
+    def list_to_str(self, input: list) -> str:
+        return ",".join(input)
 
     # function to convert timestamp to utc time format
     def utc_from_timestamp(self, timestamp: str) -> str:

@@ -34,7 +34,7 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
             api = self.extra_features_api.format(feature=feature,
                                                  limit_per_page=limit_per_page,
                                                  offset=offset)
-            response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":

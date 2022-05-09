@@ -13,10 +13,9 @@ class NFT_scraper_collection_base_class(NFT_scraper_base_class):
         return super().get_value(input_dict, key)
 
     def validate_collection_id(self, collection_id: str) -> str:
-        if not isinstance(collection_id, str):
+        if not super().is_str(collection_id):
             raise TypeError("collection_id argument must be STRING type")
-
-        return collection_id.strip()
+        return super().str_strip(collection_id)
 
 
 class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
@@ -24,7 +23,6 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
     def __init__(self) -> None:
         super().__init__()
         self.__FEATURE = "activities"
-        self.__collection_activity_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
@@ -36,8 +34,8 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                                 limit: int = None,
                                 proxy_lum: dict = None) -> list:
 
-        # empty the return list
-        self.__collection_activity_list.clear()
+        # instantiate a list to store the scrape results
+        collection_activity_list = []
 
         # validate the input parameters
         collection_id = super().validate_collection_id(collection_id)
@@ -57,7 +55,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                                              collection_id=collection_id,
                                              limit_per_page=limit_per_page,
                                              offset=offset)
-            response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -118,13 +116,13 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                     collection_activity["seller_is_whale"] = self.get_value(
                         seller, "is_whale")
 
-                    self.__collection_activity_list.append(collection_activity)
+                    collection_activity_list.append(collection_activity)
 
                     scraped_count += 1
 
                 offset += limit_per_page
 
-        return self.__collection_activity_list
+        return collection_activity_list
 
 
 class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
@@ -132,7 +130,6 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
     def __init__(self) -> None:
         super().__init__()
         self.__api = "https://api.nftbase.com/web/api/v1/collection/detail?collection_id={collection_id}"
-        self.__collection_details = {}
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
@@ -142,59 +139,58 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
                               collection_id: str,
                               proxy_lum: dict = None) -> dict:
 
-        # empty the return list
-        self.__collection_details.clear()
+        # instantiate a list to store the scrape results
+        collection_details = {}
 
         # validate the input parameters
         collection_id = super().validate_collection_id(collection_id)
 
         # make GET request to the API endpoint
         api = self.__api.format(collection_id=collection_id)
-        response = requests.get(api, proxies=proxy_lum)
+        response = requests.get(url=api, proxies=proxy_lum)
 
         # if the request is successful
         if str(response.status_code) == "200":
             data = response.json()["data"]
 
             # collection basic details
-            self.__collection_details["id"] = self.get_value(data, "id")
-            self.__collection_details["name"] = self.get_value(data, "name")
-            self.__collection_details["image_url"] = self.get_value(
-                data, "image_url")
-            self.__collection_details["banner_image_url"] = self.get_value(
+            collection_details["id"] = self.get_value(data, "id")
+            collection_details["name"] = self.get_value(data, "name")
+            collection_details["image_url"] = self.get_value(data, "image_url")
+            collection_details["banner_image_url"] = self.get_value(
                 data, "banner_image_url")
-            self.__collection_details["description"] = self.get_value(
+            collection_details["description"] = self.get_value(
                 data, "description")
 
             # collection social media details
-            self.__collection_details["twitter_url"] = self.get_value(
+            collection_details["twitter_url"] = self.get_value(
                 data, "twitter_url")
-            self.__collection_details["instagram_url"] = self.get_value(
+            collection_details["instagram_url"] = self.get_value(
                 data, "instagram_url")
-            self.__collection_details["external_url"] = self.get_value(
+            collection_details["external_url"] = self.get_value(
                 data, "external_url")
-            self.__collection_details["discord_url"] = self.get_value(
+            collection_details["discord_url"] = self.get_value(
                 data, "discord_url")
-            self.__collection_details["open_sea_url"] = self.get_value(
+            collection_details["open_sea_url"] = self.get_value(
                 data, "open_sea_url")
 
             # collection item details
-            self.__collection_details["item_count"] = self.get_value(
+            collection_details["item_count"] = self.get_value(
                 data, "item_count")
-            self.__collection_details["owner_count"] = self.get_value(
+            collection_details["owner_count"] = self.get_value(
                 data, "owner_count")
 
             # collection trading / transaction details
-            self.__collection_details["volume_in_24h"] = self.get_value(
+            collection_details["volume_in_24h"] = self.get_value(
                 data, "volume_in_24h")
-            self.__collection_details["floor_price"] = self.get_value(
+            collection_details["floor_price"] = self.get_value(
                 data, "floor_price")
-            self.__collection_details["mint_price"] = self.get_value(
+            collection_details["mint_price"] = self.get_value(
                 data, "mint_price")
-            self.__collection_details["blue_index"] = self.get_value(
+            collection_details["blue_index"] = self.get_value(
                 data, "blue_index")
 
-        return self.__collection_details
+        return collection_details
 
 
 class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
@@ -202,7 +198,6 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
     def __init__(self) -> None:
         super().__init__()
         self.__api = "https://api.nftbase.com/web/api/v1/graph/asset/search?collection_id={collection_id}&offset={offset}&limit={limit_per_page}"
-        self.__collection_asset_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
@@ -213,8 +208,8 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
                              limit: int = None,
                              proxy_lum: dict = None) -> list:
 
-        # empty the return list
-        self.__collection_asset_list.clear()
+        # instantiate a list to store the scrape results
+        collection_asset_list = []
 
         # validate the input parameters
         collection_id = super().validate_collection_id(collection_id)
@@ -233,7 +228,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
             api = self.__api.format(collection_id=collection_id,
                                     limit_per_page=limit_per_page,
                                     offset=offset)
-            response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -284,13 +279,13 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
                     collection_asset["buying_price"] = self.get_value(
                         payment_asset_details, "usdSpotPrice")
 
-                    self.__collection_asset_list.append(collection_asset)
+                    collection_asset_list.append(collection_asset)
 
                     scraped_count += 1
 
                 offset += limit_per_page
 
-        return self.__collection_asset_list
+        return collection_asset_list
 
 
 class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
@@ -309,7 +304,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
                               limit: int = None,
                               proxy_lum: dict = None) -> list:
 
-        # empty the return list
+        # instantiate a list to store the scrape results
         self.__collection_holders_list.clear()
 
         # validate the input parameters
@@ -330,7 +325,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
                                              collection_id=collection_id,
                                              limit_per_page=limit_per_page,
                                              offset=offset)
-            response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":

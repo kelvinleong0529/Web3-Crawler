@@ -14,11 +14,11 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
 
     # function to validate the "price_range" input parameter
     def __validate_price_range(self, price_range: int) -> str:
-        if price_range is None:
+        if super().is_none(price_range):
             return ""
-        if not isinstance(price_range, int):
+        if not super().is_int(price_range):
             raise TypeError("price_range argument must be a INTEGER type")
-        return str(price_range)
+        return super().int_to_str(price_range)
 
     # function to scrape the nfts based on the input feature
     def __get_featured_nft(self, feature: str, action_list: list,
@@ -37,8 +37,8 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         action_list = super().strip_and_capitalize_list(
             target_list=action_list)
         # check the action list to see if it's valid
-        super().validate_action_list(target_list=action_list)
-        action_list = super().list_to_str(taget_list=action_list)
+        super().validate_action_list(input=action_list)
+        action_list = super().list_to_str(input=action_list)
 
         price_range = self.__validate_price_range(price_range=price_range)
 
@@ -55,7 +55,7 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
                                            price_range=price_range,
                                            offset=offset,
                                            limit_per_page=limit_per_page)
-            response = requests.get(api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_lum)
 
             # if the request is successful
             if str(response.status_code) == "200":
