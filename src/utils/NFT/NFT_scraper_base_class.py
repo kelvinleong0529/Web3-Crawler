@@ -1,10 +1,12 @@
 import datetime
 
+
 class NFT_scraper_base_class:
 
     def __init__(self) -> None:
         self.__LIMIT_PER_PAGE = 20
         self.__LIMIT = 50
+        self.__ACTION_LIST = ["buy", "sell", "mint", "receive", "send"]
 
     def get_value(self, input_dict: dict, key: str) -> str:
         if isinstance(input_dict, dict):
@@ -13,17 +15,17 @@ class NFT_scraper_base_class:
 
     # validate the "limit_per_page" input paramter
     def validate_limit_per_page(self, limit_per_page: int) -> int:
-        if limit_per_page is None:
+        if self.is_none(limit_per_page):
             return self.__LIMIT_PER_PAGE
-        if not isinstance(limit_per_page, int):
+        if not self.is_int(input=limit_per_page):
             raise TypeError("limit_per_page argument must be INTEGER type")
         return limit_per_page
 
     # validate the "limit" input parameter
     def validate_limit(self, limit: int) -> int:
-        if limit is None:
+        if self.is_none(limit):
             return self.__LIMIT
-        if not isinstance(limit, int):
+        if not self.is_int(input=limit):
             raise TypeError("limit argument must be INTEGER type")
         return limit
 
@@ -31,24 +33,36 @@ class NFT_scraper_base_class:
     def remove_duplicate_in_dict_list(self, target_list: list) -> dict:
         return [dict(t) for t in {tuple(d.items()) for d in target_list}]
 
-    # function to join the action list with "," and merge into a string
-    def action_list_to_str(self, target_list: list) -> str:
-        # return empty string if the target_list is None
-        if target_list is None:
-            return ""
-        if not isinstance(target_list, list):
-            raise TypeError("You should pass a LIST of actions")
+    # check and validate the action list is valid
+    def validate_action_list(self, target_list: list) -> None:
 
-        # remove any trailing whitespace and capitilize the first letter of each element in the list
-        target_list = [data.strip().capitalize() for data in target_list]
-
-        # list of actions allowed
-        action_list = ["buy", "sell", "mint", "receive", "send"]
-
-        if not set(target_list).issubset(set(action_list)):
+        if not set(target_list).issubset(set(self.__ACTION_LIST)):
             raise ValueError(
                 "action_list values can only be a subset of: [buy, sell, mint, receive, send]"
             )
+        return True
+
+    def is_int(self, input: int) -> bool:
+        return True if isinstance(input, int) else False
+
+    def is_list(self, input: list) -> bool:
+        return True if isinstance(input, list) else False
+
+    def is_string(self, input: str) -> bool:
+        return True if isinstance(input, str) else False
+
+    def is_dict(self, input: dict) -> bool:
+        return True if isinstance(input, dict) else False
+
+    def is_none(self, input: None) -> bool:
+        return True if input is None else False
+
+    # remove any trailing whitespace and capitilize the first letter of each element in the list
+    def strip_and_capitalize_list(self, target_list: list) -> list:
+        return [element.strip().capitalize() for element in target_list]
+
+    # function to join the target list with "," and merge into a string
+    def list_to_str(self, target_list: list) -> str:
         return ",".join(target_list)
 
     # function to convert timestamp to utc time format

@@ -13,7 +13,7 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
 
     def get_sort_option(self, sort_option: str) -> int:
 
-        if not isinstance(sort_option, str):
+        if not super().is_string(sort_option):
             raise TypeError("sort_option must be STRING type argument")
 
         # sort option list
@@ -31,7 +31,7 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
                                user_address: str,
                                proxy_lum: dict = None) -> str:
 
-        if not isinstance(user_address, str):
+        if not super().is_string(user_address):
             raise TypeError("user_address argument must be a STRING type")
 
         api = self.__user_details_api.format(address=user_address)
@@ -82,7 +82,6 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
         super().__init__()
         self.__api = self.user_api.format(
             feature="gallery") + "&sort={sort_option}"
-        self.__user_gallery_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
@@ -94,17 +93,23 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                          sort_option: str = "Market Cap",
                          proxy_lum: dict = None) -> list:
 
-        # empty the return list
-        self.__user_gallery_list.clear()
+        # instantiate a list to store the scrape results
+        user_gallery_list = []
 
+        # --------------------------------------------
         # validate the input parameters
+        # --------------------------------------------
+        # 1. sort_option
         sort_option = super().get_sort_option(sort_option=sort_option)
+        # 2. limit_per_page
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
+        # 3. limit
         limit = super().validate_limit(limit=limit)
 
         # retrieve the user id from user address
-        user_id = super().get_user_id_by_address(user_address)
+        user_id = super().get_user_id_by_address(user_address=user_address,
+                                                 proxy_lum=proxy_lum)
 
         # variables for scraping
         finished_scraping = False
@@ -153,16 +158,20 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                     user_gallery["collection_name"] = self.get_value(
                         user_galleries, "collection_name")
 
-                    # append the result into the list and increment the offset value by 1
-                    self.__user_gallery_list.append(user_gallery)
+                    # append the result into the list
+                    user_gallery_list.append(user_gallery)
 
+                    # increment the scraped count by 1
                     scraped_count += 1
 
                 offset += limit_per_page
 
-        self.__user_gallery_list = super().remove_duplicate_in_dict_list(
-            self.__user_gallery_list)
-        return self.__user_gallery_list
+        if not super().is_list(user_gallery_list):
+            raise TypeError("scraped user_gallery_list should be LIST type")
+        user_gallery_list = super().remove_duplicate_in_dict_list(
+            user_gallery_list)
+
+        return user_gallery_list
 
 
 class NFT_scraper_user_collection(NFT_scraper_user_base_class):
@@ -171,7 +180,6 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
         super().__init__()
         self.__api = self.user_api.format(
             feature="collection") + "&sort={sort_option}"
-        self.__user_collection_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
@@ -183,8 +191,8 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                             sort_option: str = "Market Cap",
                             proxy_lum: dict = None) -> list:
 
-        # empty the return list
-        self.__user_collection_list.clear()
+        # instantiate a list to store the scrape results
+        user_collection_list = []
 
         # validate the input parameters
         sort_option = super().get_sort_option(sort_option=sort_option)
@@ -263,15 +271,17 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                         user_collection["price"] = price + " " + currency
 
                         # append the result into the list and increment the offset value by 1
-                        self.__user_collection_list.append(user_collection)
+                        user_collection_list.append(user_collection)
 
                         scraped_count += 1
 
                 offset += limit_per_page
 
-        self.__user_collection_list = super().remove_duplicate_in_dict_list(
-            self.__user_collection_list)
-        return self.__user_collection_list
+        if not super().is_list(user_collection_list):
+            raise TypeError("scraped user_collection_list should be LIST type")
+        user_collection_list = super().remove_duplicate_in_dict_list(
+            user_collection_list)
+        return user_collection_list
 
 
 class NFT_scraper_user_activity(NFT_scraper_user_base_class):
@@ -280,7 +290,6 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
         super().__init__()
         self.__api = self.user_api.format(
             feature="activities") + "&action={action_list}"
-        self.__user_activity_list = []
 
     def get_value(self, input_dict: dict, key: str) -> str:
         return super().get_value(input_dict, key)
@@ -292,14 +301,21 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                           limit: int = None,
                           proxy_lum: dict = None) -> list:
 
-        # empty the return list
-        self.__user_activity_list.clear()
+        # instantiate a list to store the scrape results
+        user_activity_list = []
 
         # validate the input parameters
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)
-        action_list = super().action_list_to_str(taget_list=action_list)
+
+        if not super().is_list(action_list):
+            raise TypeError("action_list argument must be LIST type")
+        action_list = super().strip_and_capitalize_list(
+            target_list=action_list)
+        # check the action list to see if it's valid
+        super().validate_action_list(target_list=action_list)
+        action_list = super().list_to_str(taget_list=action_list)
 
         # retrieve the user id from user address
         user_id = super().get_user_id_by_address(user_address)
@@ -369,15 +385,16 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                         user_activities, "collection_name")
 
                     # append the result into the list and increment the offset value by 1
-                    self.__user_activity_list.append(user_activity)
+                    user_activity_list.append(user_activity)
 
                     scraped_count += 1
 
                 offset += limit_per_page
 
-        self.__user_activity_list = super().remove_duplicate_in_dict_list(
-            self.__user_activity_list)
-        return self.__user_activity_list
+        if not super().is_list(user_activity_list):
+            raise TypeError("scraped user_collection_list should be LIST type")
+        user_activity_list = super().remove_duplicate_in_dict_list(
+            user_activity_list)
 
 
 class NFT_scraper_user_class(NFT_scraper_user_collection,

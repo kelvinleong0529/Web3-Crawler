@@ -31,7 +31,15 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)
-        action_list = super().action_list_to_str(action_list=action_list)
+
+        if not super().is_list(action_list):
+            raise TypeError("action_list argument must be LIST type")
+        action_list = super().strip_and_capitalize_list(
+            target_list=action_list)
+        # check the action list to see if it's valid
+        super().validate_action_list(target_list=action_list)
+        action_list = super().list_to_str(taget_list=action_list)
+
         price_range = self.__validate_price_range(price_range=price_range)
 
         # variables for scraping
