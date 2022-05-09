@@ -101,8 +101,3 @@ class NFT_scraper_validation_class(NFT_scraper_base_class):
         if not super().is_int(limit_per_page):
             raise TypeError("limit_per_page argument must be INTEGER type")
         return limit_per_page
-
-    def validate_collection_id(self, collection_id: str) -> str:
-        if not super().is_str(collection_id):
-            raise TypeError("collection_id argument must be STRING type")
-        return super().str_strip(collection_id)

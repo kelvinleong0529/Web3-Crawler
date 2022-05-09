@@ -9,6 +9,11 @@ class NFT_scraper_collection_base_class(NFT_scraper_validation_class):
         super().__init__()
         self.collection_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
 
+    def validate_collection_id(self, collection_id: str) -> str:
+        if not super().is_str(collection_id):
+            raise TypeError("collection_id argument must be STRING type")
+        return super().str_strip(collection_id)
+
 
 class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
 
@@ -24,7 +29,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                                 collection_id: str,
                                 limit_per_page: int = None,
                                 limit: int = None,
-                                proxy_lum: dict = None) -> list:
+                                proxy_dict: dict = None) -> list:
 
         # create a list to store the scrape results
         collection_activity_list = []
@@ -47,7 +52,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                                              collection_id=collection_id,
                                              limit_per_page=limit_per_page,
                                              offset=offset)
-            response = requests.get(url=api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_dict)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -129,7 +134,7 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
     # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
     def get_collection_detail(self,
                               collection_id: str,
-                              proxy_lum: dict = None) -> dict:
+                              proxy_dict: dict = None) -> dict:
 
         # create a list to store the scrape results
         collection_details = {}
@@ -139,7 +144,7 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
 
         # make GET request to the API endpoint
         api = self.__api.format(collection_id=collection_id)
-        response = requests.get(url=api, proxies=proxy_lum)
+        response = requests.get(url=api, proxies=proxy_dict)
 
         # if the request is successful
         if str(response.status_code) == "200":
@@ -198,7 +203,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
                              collection_id: str,
                              limit_per_page: int = None,
                              limit: int = None,
-                             proxy_lum: dict = None) -> list:
+                             proxy_dict: dict = None) -> list:
 
         # create a list to store the scrape results
         collection_asset_list = []
@@ -220,7 +225,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
             api = self.__api.format(collection_id=collection_id,
                                     limit_per_page=limit_per_page,
                                     offset=offset)
-            response = requests.get(url=api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_dict)
 
             # if the request is successful
             if str(response.status_code) == "200":
@@ -294,7 +299,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
                               collection_id: str,
                               limit_per_page: int = None,
                               limit: int = None,
-                              proxy_lum: dict = None) -> list:
+                              proxy_dict: dict = None) -> list:
 
         # create a list to store the scrape results
         self.__collection_holders_list.clear()
@@ -317,7 +322,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
                                              collection_id=collection_id,
                                              limit_per_page=limit_per_page,
                                              offset=offset)
-            response = requests.get(url=api, proxies=proxy_lum)
+            response = requests.get(url=api, proxies=proxy_dict)
 
             # if the request is successful
             if str(response.status_code) == "200":
