@@ -22,38 +22,49 @@ class NFT_scraper_base_class:
             raise TypeError("Only accepts LIST as arguments")
         return [dict(t) for t in {tuple(d.items()) for d in input}]
 
-    def is_int(self, input: int) -> bool:
+    @staticmethod
+    def is_int(input: int) -> bool:
         return True if isinstance(input, int) else False
 
-    def is_list(self, input: list) -> bool:
+    @staticmethod
+    def is_list(input: list) -> bool:
         return True if isinstance(input, list) else False
 
-    def is_str(self, input: str) -> bool:
+    @staticmethod
+    def is_str(input: str) -> bool:
         return True if isinstance(input, str) else False
 
-    def is_dict(self, input: dict) -> bool:
+    @staticmethod
+    def is_dict(input: dict) -> bool:
         return True if isinstance(input, dict) else False
 
-    def is_none(self, input: None) -> bool:
+    @staticmethod
+    def is_none(input: None) -> bool:
         return True if input is None else False
 
-    def int_to_str(self, input: int) -> str:
+    @staticmethod
+    def int_to_str(input: int) -> str:
         return str(input)
 
-    def str_to_int(self, input: str) -> int:
+    @staticmethod
+    def str_to_int(input: str) -> int:
         return int(input)
 
-    def str_strip(self, input: str) -> str:
+    @staticmethod
+    def str_strip(input: str) -> str:
         return input.strip()
 
-    def str_lower(self, input: str) -> str:
+    @staticmethod
+    def str_lower(input: str) -> str:
         return input.lower()
 
-    def str_capitalize(self, input: str) -> str:
+    @staticmethod
+    def str_capitalize(input: str) -> str:
         return input.capitalize()
 
+    @staticmethod
     # function to join the target list with "," and merge into a string
-    def list_to_str(self, input: list) -> str:
+    def list_to_str(input: list) -> str:
         return ",".join(input)
 
     # function to convert timestamp to utc time format
@@ -101,3 +112,24 @@ class NFT_scraper_validation_class(NFT_scraper_base_class):
         if not super().is_int(limit_per_page):
             raise TypeError("limit_per_page argument must be INTEGER type")
         return limit_per_page
+
+    def get_sort_option(self, sort_option: str) -> int:
+        if not super().is_str(sort_option):
+            raise TypeError("sort_option must be STRING type argument")
+
+        # sort option list
+        # market cap = 1, latest = 2, etc ...
+        sort_option_list = ["market cap", "latest", "oldest"]
+
+        # remove any trailing whitespaces and convert the string to lower case
+        sort_option = super().str_strip(sort_option)
+        sort_option = super().str_lower(sort_option)
+
+        # check and see if the sort option is valid
+        if sort_option not in sort_option_list:
+            raise ValueError(
+                "Sort option must be either one of these: [Market Cap, Latest, Oldest]"
+            )
+
+        # return the corresponding sort parameter
+        return sort_option_list.index(sort_option) + 1

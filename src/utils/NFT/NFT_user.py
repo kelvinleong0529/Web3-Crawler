@@ -10,24 +10,6 @@ class NFT_scraper_user_base_class(NFT_scraper_validation_class):
         self.__user_details_api = "https://api.nftbase.com/web/api/v1/user/info/address?address={address}"
         self.user_api = "https://api.nftbase.com/web/api/v1/user/{feature}?user_id={{user_id}}&offset={{offset}}&limit={{limit_per_page}}"
 
-    def get_sort_option(self, sort_option: str) -> int:
-
-        if not super().is_str(sort_option):
-            raise TypeError("sort_option must be STRING type argument")
-
-        # sort option list
-        # market cap = 1, latest = 2, etc ...
-        sort_option_list = ["market cap", "latest", "oldest"]
-
-        # remove any trailing whitespaces and convert the string to lower case
-        sort_option = super().str_strip(sort_option)
-        sort_option = super().str_lower(sort_option)
-        if sort_option not in sort_option_list:
-            raise ValueError(
-                "Sort option must be either one of these: [Market Cap, Latest, Oldest]"
-            )
-        return super().str_to_int(sort_option_list.index(sort_option)) + 1
-
     def get_user_id_by_address(self,
                                user_address: str,
                                proxy_dict: dict = None) -> str:
