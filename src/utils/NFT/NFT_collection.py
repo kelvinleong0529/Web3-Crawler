@@ -1,3 +1,4 @@
+from importlib.resources import is_resource
 import requests
 
 from NFT_scraper_base_class import *
@@ -52,11 +53,12 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                                              collection_id=collection_id,
                                              limit_per_page=limit_per_page,
                                              offset=offset)
-            response = requests.get(url=api, proxies=proxy_dict)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
             # if the request is successful
-            if str(response.status_code) == "200":
-                data = response.json()["data"]
+            if is_success:
+                data = response["data"]
 
                 # if the response returns blank or empty data, break the loop
                 if not data:
@@ -144,11 +146,12 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
 
         # make GET request to the API endpoint
         api = self.__api.format(collection_id=collection_id)
-        response = requests.get(url=api, proxies=proxy_dict)
+        is_success, response = super().get_url_response(url=api,
+                                                        proxy_dict=proxy_dict)
 
         # if the request is successful
-        if str(response.status_code) == "200":
-            data = response.json()["data"]
+        if is_success:
+            data = response["data"]
 
             # collection basic details
             collection_details["id"] = self.get_value(data, "id")
@@ -225,11 +228,12 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
             api = self.__api.format(collection_id=collection_id,
                                     limit_per_page=limit_per_page,
                                     offset=offset)
-            response = requests.get(url=api, proxies=proxy_dict)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
             # if the request is successful
-            if str(response.status_code) == "200":
-                edges = response.json()["data"]["edges"]
+            if is_success:
+                edges = response["data"]["edges"]
 
                 # if the response returns blank or empty data, break the loop
                 if not edges:
@@ -322,11 +326,12 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
                                              collection_id=collection_id,
                                              limit_per_page=limit_per_page,
                                              offset=offset)
-            response = requests.get(url=api, proxies=proxy_dict)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
             # if the request is successful
-            if str(response.status_code) == "200":
-                data = response.json()["data"]
+            if is_success:
+                data = response["data"]
 
                 # if the response returns blank or empty data, break the loop
                 if not data:

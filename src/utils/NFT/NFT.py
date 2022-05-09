@@ -19,9 +19,7 @@ class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class,
 
 my_NFT_scraper = NFT_scraper()
 NFT_scraper().scraper_info()
-results = my_NFT_scraper.get_user_gallery(
-    limit=5,
-    user_address="0x6639c089adfba8bb9968da643c6be208a70d6daa",
-    sort_option="Market Cap")
+results = my_NFT_scraper.get_collection_activity(
+    limit=5,collection_id="otherdeed")
 for result in results:
     print(result)

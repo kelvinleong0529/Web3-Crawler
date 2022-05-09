@@ -1,4 +1,6 @@
 import datetime
+from typing import Type
+import requests
 
 
 class NFT_scraper_base_class:
@@ -21,6 +23,22 @@ class NFT_scraper_base_class:
         if not self.is_list(input):
             raise TypeError("Only accepts LIST as arguments")
         return [dict(t) for t in {tuple(d.items()) for d in input}]
+
+    def get_url_response(self, url: str, proxy_dict: dict) -> tuple:
+        if not self.is_str(url):
+            raise TypeError("Invalid URL / API passed!")
+        if not (self.is_dict(proxy_dict) or self.is_none(proxy_dict)):
+            raise TypeError("proxy_dict must be DICTIONARY type")
+
+        # is_sucess TRUE means successful GET request
+        is_success = None
+        response = requests.get(url=url, proxies=proxy_dict)
+        if str(response.status_code) == "200":
+            is_success = True
+            response = response.json()
+        else:
+            is_success = False
+        return (is_success, response)
 
     @staticmethod
     def is_int(input: int) -> bool:
