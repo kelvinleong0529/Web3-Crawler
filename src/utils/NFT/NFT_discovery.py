@@ -50,7 +50,7 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
                     if scraped_count > limit:
                         break
 
-                    # initialize a dict to store the details
+                    # create a dict to store the details
                     featured_nft = {}
 
                     # featured nft basic details

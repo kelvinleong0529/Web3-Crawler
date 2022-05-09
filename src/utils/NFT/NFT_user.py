@@ -1,15 +1,14 @@
 import requests
 
-from NFT_scraper_base_class import NFT_scraper_base_class
+from NFT_scraper_base_class import *
 
 
-class NFT_scraper_user_base_class(NFT_scraper_base_class):
+class NFT_scraper_user_base_class(NFT_scraper_validation_class):
 
     def __init__(self) -> None:
         super().__init__()
         self.__user_details_api = "https://api.nftbase.com/web/api/v1/user/info/address?address={address}"
         self.user_api = "https://api.nftbase.com/web/api/v1/user/{feature}?user_id={{user_id}}&offset={{offset}}&limit={{limit_per_page}}"
-        self.__user_details = {}
 
     def get_sort_option(self, sort_option: str) -> int:
 
@@ -17,15 +16,17 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
             raise TypeError("sort_option must be STRING type argument")
 
         # sort option list
+        # market cap = 1, latest = 2, etc ...
         sort_option_list = ["market cap", "latest", "oldest"]
 
         # remove any trailing whitespaces and convert the string to lower case
-        sort_option = sort_option.strip().lower()
+        sort_option = super().str_strip(sort_option)
+        sort_option = super().str_lower(sort_option)
         if sort_option not in sort_option_list:
             raise ValueError(
                 "Sort option must be either one of these: [Market Cap, Latest, Oldest]"
             )
-        return int(sort_option_list.index(sort_option)) + 1
+        return super().str_to_int(sort_option_list.index(sort_option)) + 1
 
     def get_user_id_by_address(self,
                                user_address: str,
@@ -45,8 +46,11 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
                          user_address: str,
                          proxy_lum: dict = None) -> dict:
 
-        # reset the dictionary
-        self.__user_details.clear()
+        # create a dict to store the scraped results
+        user_details = {}
+
+        if not super().is_str(user_address):
+            raise TypeError("user_address argument must be a STRING type")
 
         api = self.__user_details_api.format(address=user_address)
         response = requests.get(url=api, proxies=proxy_lum)
@@ -54,26 +58,21 @@ class NFT_scraper_user_base_class(NFT_scraper_base_class):
             response = response.json()
             data = response["data"]
 
-            self.__user_details["id"] = self.get_value(data, "id")
-            self.__user_details["avatar_url"] = self.get_value(
-                data, "avatar_url")
-            self.__user_details["item_count"] = self.get_value(
-                data, "item_count")
-            self.__user_details["email"] = self.get_value(data, "email")
-            self.__user_details["followers_count"] = self.get_value(
+            user_details["id"] = self.get_value(data, "id")
+            user_details["avatar_url"] = self.get_value(data, "avatar_url")
+            user_details["item_count"] = self.get_value(data, "item_count")
+            user_details["email"] = self.get_value(data, "email")
+            user_details["followers_count"] = self.get_value(
                 data, "followers_count")
-            self.__user_details["following_count"] = self.get_value(
+            user_details["following_count"] = self.get_value(
                 data, "following_count")
-            self.__user_details["facebook_url"] = self.get_value(
-                data, "facebook_url")
-            self.__user_details["twitter_url"] = self.get_value(
-                data, "twitter_url")
-            self.__user_details["intro"] = self.get_value(data, "intro")
-            self.__user_details["web_url"] = self.get_value(data, "web_url")
-            self.__user_details["banner_image"] = self.get_value(
-                data, "banner_image")
+            user_details["facebook_url"] = self.get_value(data, "facebook_url")
+            user_details["twitter_url"] = self.get_value(data, "twitter_url")
+            user_details["intro"] = self.get_value(data, "intro")
+            user_details["web_url"] = self.get_value(data, "web_url")
+            user_details["banner_image"] = self.get_value(data, "banner_image")
 
-        return self.__user_details
+        return user_details
 
 
 class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
@@ -93,7 +92,7 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                          sort_option: str = "Market Cap",
                          proxy_lum: dict = None) -> list:
 
-        # instantiate a list to store the scrape results
+        # create a list to store the scrape results
         user_gallery_list = []
 
         # --------------------------------------------
@@ -139,7 +138,7 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                     if scraped_count > limit:
                         break
 
-                    # initialize a dict to store the details
+                    # create a dict to store the details
                     user_gallery = {}
 
                     # NFT gallery details
@@ -166,8 +165,6 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
 
                 offset += limit_per_page
 
-        if not super().is_list(user_gallery_list):
-            raise TypeError("scraped user_gallery_list should be LIST type")
         user_gallery_list = super().remove_duplicate_in_dict_list(
             user_gallery_list)
 
@@ -191,7 +188,7 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                             sort_option: str = "Market Cap",
                             proxy_lum: dict = None) -> list:
 
-        # instantiate a list to store the scrape results
+        # create a list to store the scrape results
         user_collection_list = []
 
         # validate the input parameters
@@ -201,7 +198,8 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
         limit = super().validate_limit(limit=limit)
 
         # retrieve the user id from user address
-        user_id = super().get_user_id_by_address(user_address)
+        user_id = super().get_user_id_by_address(user_address=user_address,
+                                                 proxy_lum=proxy_lum)
 
         # variables for scraping
         finished_scraping = False
@@ -231,7 +229,7 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                     if scraped_count > limit:
                         break
 
-                    # initialize a dict to store the details
+                    # create a dict to store the details
                     user_base_collection = {}
 
                     # NFT collection basic details
@@ -277,8 +275,6 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
 
                 offset += limit_per_page
 
-        if not super().is_list(user_collection_list):
-            raise TypeError("scraped user_collection_list should be LIST type")
         user_collection_list = super().remove_duplicate_in_dict_list(
             user_collection_list)
         return user_collection_list
@@ -301,7 +297,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                           limit: int = None,
                           proxy_lum: dict = None) -> list:
 
-        # instantiate a list to store the scrape results
+        # create a list to store the scrape results
         user_activity_list = []
 
         # validate the input parameters
@@ -316,7 +312,8 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
         action_list = super().list_to_str(taget_list=action_list)
 
         # retrieve the user id from user address
-        user_id = super().get_user_id_by_address(user_address)
+        user_id = super().get_user_id_by_address(user_address=user_address,
+                                                 proxy_lum=proxy_lum)
 
         # variables for scraping
         finished_scraping = False
@@ -346,7 +343,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                     if scraped_count > limit:
                         break
 
-                    # initialize a dict to store the details
+                    # create a dict to store the details
                     user_activity = {}
 
                     # NFT activity target user (BUY from or SELL to)
@@ -366,7 +363,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                     user_activity["id"] = self.get_value(user_activities, "id")
                     user_activity["token_id"] = self.get_value(
                         user_activities, "token_id")
-                    user_activity["timestamp"] = super().utc_from_timestamp(
+                    user_activity["timestamp"] = super().timestamp_to_utc(
                         self.get_value(user_activities, "timestamp"))
                     price = self.get_value(user_activities, "price")
                     currency = self.get_value(user_activities, "symbol")
@@ -389,8 +386,6 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
 
                 offset += limit_per_page
 
-        if not super().is_list(user_activity_list):
-            raise TypeError("scraped user_collection_list should be LIST type")
         user_activity_list = super().remove_duplicate_in_dict_list(
             user_activity_list)
 

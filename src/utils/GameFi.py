@@ -33,7 +33,7 @@ class GameFi_scraper:
         category = self.__category_list_to_str(category)
         limit = self.__validate_limit(limit)
 
-        # initialize a list to store the details
+        # create a list to store the details
         token_detail_list = []
 
         # variables for scraping
@@ -65,7 +65,7 @@ class GameFi_scraper:
                         finished_scraping = True
                         break
 
-                    # initialize a dict to store the details
+                    # create a dict to store the details
                     token = {}
 
                     # gamefi token details

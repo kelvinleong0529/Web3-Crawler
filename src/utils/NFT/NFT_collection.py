@@ -1,21 +1,13 @@
 import requests
 
-from NFT_scraper_base_class import NFT_scraper_base_class
+from NFT_scraper_base_class import *
 
 
-class NFT_scraper_collection_base_class(NFT_scraper_base_class):
+class NFT_scraper_collection_base_class(NFT_scraper_validation_class):
 
     def __init__(self) -> None:
         super().__init__()
         self.collection_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
-
-    def get_value(self, input_dict: dict, key: str) -> str:
-        return super().get_value(input_dict, key)
-
-    def validate_collection_id(self, collection_id: str) -> str:
-        if not super().is_str(collection_id):
-            raise TypeError("collection_id argument must be STRING type")
-        return super().str_strip(collection_id)
 
 
 class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
@@ -34,7 +26,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                                 limit: int = None,
                                 proxy_lum: dict = None) -> list:
 
-        # instantiate a list to store the scrape results
+        # create a list to store the scrape results
         collection_activity_list = []
 
         # validate the input parameters
@@ -71,7 +63,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                     if scraped_count > limit:
                         break
 
-                    # initialize a dict to store the details
+                    # create a dict to store the details
                     collection_activity = {}
 
                     # transaction details
@@ -83,7 +75,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
                     collection_activity["action"] = self.get_value(
                         collection_activities, "action")
                     collection_activity["timestamp"] = super(
-                    ).utc_from_timestamp(
+                    ).timestamp_to_utc(
                         self.get_value(collection_activities, "timestamp"))
 
                     # NFT details
@@ -139,7 +131,7 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
                               collection_id: str,
                               proxy_lum: dict = None) -> dict:
 
-        # instantiate a list to store the scrape results
+        # create a list to store the scrape results
         collection_details = {}
 
         # validate the input parameters
@@ -208,7 +200,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
                              limit: int = None,
                              proxy_lum: dict = None) -> list:
 
-        # instantiate a list to store the scrape results
+        # create a list to store the scrape results
         collection_asset_list = []
 
         # validate the input parameters
@@ -244,7 +236,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
                     if scraped_count > limit:
                         break
 
-                    # initialize a dict to store the details
+                    # create a dict to store the details
                     collection_asset = {}
 
                     asset = edge["node"]["asset"]
@@ -304,7 +296,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
                               limit: int = None,
                               proxy_lum: dict = None) -> list:
 
-        # instantiate a list to store the scrape results
+        # create a list to store the scrape results
         self.__collection_holders_list.clear()
 
         # validate the input parameters

@@ -4,46 +4,23 @@ import datetime
 class NFT_scraper_base_class:
 
     def __init__(self) -> None:
-        self.__LIMIT_PER_PAGE = 20
-        self.__LIMIT = 50
-        self.__ACTION_LIST = ["buy", "sell", "mint", "receive", "send"]
+        pass
 
     def get_value(self, input_dict: dict, key: str) -> str:
-        if isinstance(input_dict, dict):
-            return input_dict[key] if key in input_dict else "N/A"
-        return "N/A"
-
-    # validate the "limit_per_page" input paramter
-    def validate_limit_per_page(self, limit_per_page: int) -> int:
-        if self.is_none(limit_per_page):
-            return self.__LIMIT_PER_PAGE
-        if not self.is_int(input=limit_per_page):
-            raise TypeError("limit_per_page argument must be INTEGER type")
-        return limit_per_page
-
-    # validate the "limit" input parameter
-    def validate_limit(self, limit: int) -> int:
-        if self.is_none(limit):
-            return self.__LIMIT
-        if not self.is_int(input=limit):
-            raise TypeError("limit argument must be INTEGER type")
-        return limit
+        if not self.is_dict(input_dict):
+            raise TypeError("Only accepts dictionary as arguments")
+        if key not in input_dict:
+            return "N/A"
+        if self.is_dict(input_dict[key]):
+            return input_dict[key]
+        else:
+            return str(input_dict[key])
 
     # function to remove duplicates in a dictionary list
     def remove_duplicate_in_dict_list(self, input: list) -> dict:
+        if not self.is_list(input):
+            raise TypeError("Only accepts LIST as arguments")
         return [dict(t) for t in {tuple(d.items()) for d in input}]
-
-    # check and validate the action list is valid
-    def validate_action_list(self, input: list) -> bool:
-
-        input = [self.str_strip(element) for element in input]
-        input = [self.str_capitalize(element) for element in input]
-
-        if not set(input).issubset(set(self.__ACTION_LIST)):
-            raise ValueError(
-                "action_list values can only be a subset of: [buy, sell, mint, receive, send]"
-            )
-        return True
 
     def is_int(self, input: int) -> bool:
         return True if isinstance(input, int) else False
@@ -63,8 +40,14 @@ class NFT_scraper_base_class:
     def int_to_str(self, input: int) -> str:
         return str(input)
 
+    def str_to_int(self, input: str) -> int:
+        return int(input)
+
     def str_strip(self, input: str) -> str:
         return input.strip()
+
+    def str_lower(self, input: str) -> str:
+        return input.lower()
 
     def str_capitalize(self, input: str) -> str:
         return input.capitalize()
@@ -74,10 +57,52 @@ class NFT_scraper_base_class:
         return ",".join(input)
 
     # function to convert timestamp to utc time format
-    def utc_from_timestamp(self, timestamp: str) -> str:
+    def timestamp_to_utc(self, timestamp: str) -> str:
         try:
             return str(
                 datetime.datetime.utcfromtimestamp(
                     int(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
         except:
             return "N/A"
+
+
+class NFT_scraper_validation_class(NFT_scraper_base_class):
+
+    def __init__(self) -> None:
+        self.__LIMIT_PER_PAGE = 20
+        self.__LIMIT = 50
+
+    # check and validate the action list is valid
+    def validate_action_list(self, input: list) -> bool:
+
+        action_list = ["buy", "sell", "mint", "receive", "send"]
+
+        input = [super().str_strip(element) for element in input]
+        input = [super().str_capitalize(element) for element in input]
+
+        if not set(input).issubset(set(action_list)):
+            raise ValueError(
+                "action_list values can only be a subset of: [buy, sell, mint, receive, send]"
+            )
+        return True
+
+    # validate the "limit" input parameter
+    def validate_limit(self, limit: int) -> int:
+        if super().is_none(limit):
+            return self.__LIMIT
+        if not super().is_int(limit):
+            raise TypeError("limit argument must be INTEGER type")
+        return limit
+
+    # validate the "limit_per_page" input paramter
+    def validate_limit_per_page(self, limit_per_page: int) -> int:
+        if super().is_none(limit_per_page):
+            return self.__LIMIT_PER_PAGE
+        if not super().is_int(limit_per_page):
+            raise TypeError("limit_per_page argument must be INTEGER type")
+        return limit_per_page
+
+    def validate_collection_id(self, collection_id: str) -> str:
+        if not super().is_str(collection_id):
+            raise TypeError("collection_id argument must be STRING type")
+        return super().str_strip(collection_id)

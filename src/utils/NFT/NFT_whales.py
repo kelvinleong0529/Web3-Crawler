@@ -71,7 +71,7 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
                     if scraped_count > limit:
                         break
 
-                    # initialize a dict to store the details
+                    # create a dict to store the details
                     featured_nft = {}
 
                     # featured nft basic details
@@ -81,7 +81,7 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
                     currency = self.get_value(nfts, "symbol")
                     featured_nft["price"] = price + " " + currency
                     featured_nft["action"] = self.get_value(nfts, "action")
-                    featured_nft["timestamp"] = super().utc_from_timestamp(
+                    featured_nft["timestamp"] = super().timestamp_to_utc(
                         self.get_value(nfts, "timestamp"))
 
                     # featured nft relevant user details

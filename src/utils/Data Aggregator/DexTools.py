@@ -24,7 +24,11 @@ class dextools_scraper:
         token_detail_list = []
         for index, network in enumerate(self.__networks):
             token_detail_list += self.__search(network, search_string)
-        return [dict(token) for token in {tuple(tokens.items()) for tokens in token_detail_list}]
+        return [
+            dict(token) for token in
+            {tuple(tokens.items())
+             for tokens in token_detail_list}
+        ]
 
     def __search(self, network: str, search_string: str) -> list:
         api = "https://www.dextools.io/chain-{network}/api/pair/search?s={search_string}".format(
@@ -34,7 +38,7 @@ class dextools_scraper:
         if str(response.status_code) == "200":
             response = response.json()
             for index, value in enumerate(response):
-                # initialize a dict to store the details
+                # create a dict to store the details
                 token = {}
 
                 # token info
