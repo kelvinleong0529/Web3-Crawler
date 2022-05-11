@@ -47,11 +47,11 @@ pipenv install
 | Pairing details   | pairing address, exchange, pair type, base and target token's info    |
 # **Usage**
 ```python
->>> import dextools_scraper
+>>> from src.data_aggregator import DexToolsScraper
 
->>> my_dextools_scraper = dextools_scraper()
+>>> MyDexToolsScraper = DexToolsScraper()
 ... search_string = "APE"
-... for index,token in enumerate(my_dextools_scraper.get_tokens(search_string)):
+... for index,token in enumerate(MyDexToolsScraper.get_tokens(search_string)):
 ...     # print all token's address with "APE" as symbol or similar
 ...     print(token["network"] + "; " + token["address"])
 
