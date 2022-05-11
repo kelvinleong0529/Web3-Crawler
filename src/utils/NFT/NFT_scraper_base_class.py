@@ -1,6 +1,4 @@
 import datetime
-import re
-from time import time
 import requests
 
 

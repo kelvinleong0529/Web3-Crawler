@@ -1,37 +1,26 @@
-import requests
+from typing import Type
+from GameFi_scraper_base_class import GameFi_scraper_utility_cass
 
 
-class GameFi_scraper:
+class GameFi_scraper(GameFi_scraper_utility_cass):
 
     def __init__(self) -> None:
-        pass
-        self.__LIMIT = 20
+        super().__init__()
 
-    def __get_value(self, input_dict: dict, key: str) -> str:
-        if isinstance(input_dict, dict):
-            return str(input_dict[key]) if key in input_dict else "N/A"
-        return "N/A"
-
-    # function to join the category list with "," and merge into a string
-    def __category_list_to_str(self, category: list) -> str:
-        if not isinstance(category, list):
-            raise TypeError("category parameter must be LIST type")
-        return ",".join(category)
-
-    # function to validate the "limit" parameter
-    def __validate_limit(self, limit: int) -> str:
-        if limit is None:
-            return self.__LIMIT
-        if not isinstance(limit, int):
-            raise TypeError("limit parameter must be INTEGER type")
-        return str(limit)
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
+        return super().get_value(input_dict, key)
 
     # function to filter GameFi tokens by category(s), reference website: https://v2.gamefi.org/
-    def search_by_category(self, category: list, limit: int = None) -> list:
+    def search_by_category(self,
+                           category: list,
+                           limit: int = None,
+                           proxy_dict: dict = None) -> list:
 
         # validate the input parameters
-        category = self.__category_list_to_str(category)
-        limit = self.__validate_limit(limit)
+        if not super().is_list(category):
+            raise TypeError("Category argument should be LIST type")
+        category_string = super().list_to_str(category)
+        limit = super().validate_limit(limit)
 
         # create a list to store the details
         token_detail_list = []
@@ -45,17 +34,18 @@ class GameFi_scraper:
 
             # make GET request to the API endpoint
             api = "https://v2.gamefi.org/_next/data/05TfXTSF5_7vpLam60k8c/hub.json?category={category}&page={page_index}".format(
-                category=category, page_index=page_index)
-            response = requests.get(api)
+                category=category_string, page_index=page_index)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
-            if str(response.status_code) == "200":
+            if is_success:
 
                 # get the total number of pages
-                lastPage = response.json()["pageProps"]["data"]["lastPage"]
-                data = response.json()["pageProps"]["data"]["data"]
+                lastPage = response["pageProps"]["data"]["lastPage"]
+                data = response["pageProps"]["data"]["data"]
 
                 # if the data is empty, meaning no search results is associated with the category
-                if not len(data):
+                if not data:
                     finished_scraping = True
                     continue
 
