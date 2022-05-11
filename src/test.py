@@ -1,4 +1,3 @@
-from utils.GameFi import GameFi_scraper
+from utils.NFT import NftScraper
 
-my_gamefi_scraper = GameFi_scraper()
-my_gamefi_scraper.
+print(NftScraper().get_current_gas())

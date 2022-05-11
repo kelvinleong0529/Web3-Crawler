@@ -1,4 +1,4 @@
-from utility import Utlity
+from .utility import Utlity
 
 
 class Validation(Utlity):

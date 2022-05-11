@@ -1,4 +1,4 @@
-from validation import Validation
+from .validation import Validation
 
 
 class Discovery(Validation):
@@ -35,7 +35,7 @@ class Discovery(Validation):
             # if the request is successful
             if is_success:
                 data = response["data"]
-                
+
                 # if the response returns blank or empty data, break the loop
                 if not data:
                     finished_scraping = True

@@ -1,8 +1,8 @@
-from collection import Collection
-from discovery import Discovery
-from gas import Gas
-from user import User
-from whales import Whale
+from .collection import Collection
+from .discovery import Discovery
+from .gas import Gas
+from .user import User
+from .whales import Whale
 
 
 class NftScraper(Collection, Discovery, Gas, User, Whale):
