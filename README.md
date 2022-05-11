@@ -75,12 +75,12 @@ pipenv install
 ```
 # **Usage**
 ```python
->>> import honeypot_scraper
+>>> from utils.honeypot import HoneypotScraper
 
->>> my_honeypot_scraper = honeypot_scraper()
+>>> MyHoneypotScraper = HoneypotScraper()
 ... network = "Binance Smart Chain"
 ... address = "0x7ccE94C0B2C8aE7661f02544E62178377Fe8cF92"
-... honeypot_result = my_honeypot_scraper.check_honey(network = network,address = address )
+... honeypot_result = MyHoneypotScraper.check_honey(network = network,address = address )
 
 # based on 2 honeypot sources, 2 failed to detected honeypot, 0 detected honeypot
 {'message': 'Checked 2 honeypot source(s)', 'non_honeypot': 2, 'is_honeypot': 0}
@@ -133,11 +133,11 @@ and more
 
 # **Usage**
 ```python
->>> import gamefi_scraper
+>>> from utils.gamefi import GameFiScraper
 
->>> my_gamefi_scraper = gamefi_scraper()
+>>> MyGameFiScraper = GameFiScraper()
 ... category_list = ["3D","Card"]
-... for index, gamefi_token in enumerate(my_gamefi_scraper.search_by_category(category_list)):
+... for index, gamefi_token in enumerate(MyGameFiScraper.search_by_category(category_list)):
 ...     print("(" + str(index) + ") " + gamefi_token["game_name"] + "; " +
 ...         gamefi_token["category"] + "; " + gamefi_token["description"])
 
@@ -148,3 +148,54 @@ and more
 ```
 ## **Parameteres**
 1. **category**: list, list of GameFi tokens category to filter (input is NOT case sensitive, eg: if we feed "2D" it will return filter results for "2D PvP battler" as well)
+
+# **4. NFT Info Generator**
+- Retrieve NFTs related information (NFT Collection, NFT User, Hot & Trending NFTs etc.)
+```
+NFT Collection:
+1. Collection Activity (Sell,Buy,Mint,etc)
+2. Collection Assets
+3. Collection Details
+4. Collection Holders
+NFT User:
+1. User Activity (Sell,Buy,Mint,etc)
+2. User NFT Collection
+3. User Gallery
+NFT Gas:
+1. Get current Gas price
+NFT Whales (category):
+1. Smart Money 
+2. Famous
+3. Art Blocks
+4. Bored Ape Yacht Club
+5. Crypto Punks
+Hot & Trending NFTS (category):
+1. Hot Selling Ranking
+2. Volume Ranking
+3. Smart Money Buys Ranking
+4. Hot Minting Ranking
+5. Whales Minting Ranking
+6. Gainers Ranking
+7. Discounts Ranking
+```
+# **Usage**
+```python
+>>> from utils.nft import NftScraper
+
+>>> MyNftScraper = NftScraper()
+... for index, nft in enumerate(MyNftScraper.get_hot_minting_ranking(limit =10)):
+...     print("(" + str(index) + ") " + nft["name"] + "; " +
+...         nft["minters"] + "; " + nft["volume_in_24h"])
+
+(0) McLaren MSO LAB Genesis; 44; 16.544000000000004
+(1) Hedgies; 11; 9.0534
+(2) GENE_SIS: The Girls of Armament; 8; -18.3
+...
+```
+## **Parameteres**
+1. **user_address**: str, target NFTs user_address that wish to scraped
+2. **collection_id**: str, target NFTs collection_id that wish to scraped
+3. **proxy_dict**: dict, proxies to used to when scraping
+4. **limit_per_page**: int, maximum number of records to return when making GET request to API endpoint everytime, default is set to **20**
+5. **limit**: int, maximum number of records wanted to scrape, default is set to **50**
+- for other parameters please refer to the relevant function guides

@@ -1,3 +1,3 @@
 from utils.nft import NftScraper
 
-print(NftScraper().get_current_gas())
+print(NftScraper().get_hot_minting_ranking(limit=5))
