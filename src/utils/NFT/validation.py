@@ -3,52 +3,67 @@ from utility import Utlity
 
 class Validation(Utlity):
 
+    LIMIT = 50
+    LIMIT_PER_PAGE = 20
+
     def __init__(self) -> None:
         super().__init__()
 
-    def validate_action_list(self, input: list | None) -> bool:
+    @classmethod
+    def validate_action_list(cls, input_list: list ) -> bool:
         """ validate the acion list to see if it's valid
         """
 
-        if super().is_none(input):
-            return True
-
-        if not super().is_list(input):
+        if not super().is_list(input_list):
             raise TypeError("action_list must be LIST type")
 
         ACTION_LIST = ["buy", "sell", "mint", "receive", "send"]
 
         # remove any trailing whitespace and convert the elements to lower case
-        input = [super().str_strip(element) for element in input]
-        input = [super().str_lower(element) for element in input]
+        input_list = [super().str_strip(element) for element in input_list]
+        input_list = [super().str_lower(element) for element in input_list]
 
-        if not set(input).issubset(set(ACTION_LIST)):
+        if not set(input_list).issubset(set(ACTION_LIST)):
             raise ValueError(
                 "action_list values can only be a subset of: [buy, sell, mint, receive, send]"
             )
         return True
 
-    def validate_limit(self, limit: int | None) -> int:
+    @classmethod
+    def update_limit(cls, new_limit: int) -> None:
+        if not super().is_int(new_limit):
+            raise TypeError("Limit to be updated must be INTEGER type")
+        cls.LIMIT = new_limit
+
+    @classmethod
+    def update_limit_per_page(cls, new_limit_per_page: int) -> None:
+        if not super().is_int(new_limit_per_page):
+            raise TypeError(
+                "Limit_per_page to be updated must be INTEGER type")
+        cls.LIMIT_PER_PAGE = new_limit_per_page
+
+    @classmethod
+    def validate_limit(cls, limit: int | None) -> int:
         """ validate the "limit" parameter, and return default value if it's None
         """
-        LIMIT = 20
         if super().is_none(limit):
-            return LIMIT
+            return cls.LIMIT
         if not super().is_int(limit):
             raise TypeError("limit argument must be INTEGER type")
         return limit
 
-    def validate_limit_per_page(self, limit_per_page: int | None) -> int:
+    @classmethod
+    def validate_limit_per_page(cls, limit_per_page: int | None) -> int:
         """ validate the "limit_par_page" parameter, and return default value if it's None
         """
-        LIMIT_PER_PAGE = 50
         if super().is_none(limit_per_page):
-            return LIMIT_PER_PAGE
+            return cls.LIMIT_PER_PAGE
         if not super().is_int(limit_per_page):
             raise TypeError("limit_per_page argument must be INTEGER type")
         return limit_per_page
 
-    def validate_price_range(self, price_range: int | None) -> str:
+    @classmethod
+    def validate_price_range(cls, price_range: int | None) -> str:
         """ validate the "price_range" parameter, and convert it from int to string type
         """
         if super().is_none(price_range):
@@ -57,7 +72,8 @@ class Validation(Utlity):
             raise TypeError("price_range argument must be a INTEGER type")
         return super().int_to_str(price_range)
 
-    def get_sort_option(self, sort_option: str) -> int:
+    @classmethod
+    def get_sort_option(cls, sort_option: str) -> int:
         """ return sorting parameter based on sorting option input
         """
         if not super().is_str(sort_option):

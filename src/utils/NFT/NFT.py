@@ -1,11 +1,11 @@
 from collection import Collection
-from user import User
 from discovery import Discovery
-from whales import Whale
 from gas import Gas
+from user import User
+from whales import Whale
 
 
-class NftScraper(Collection, User, Discovery, Whale, Gas):
+class NftScraper(Collection, Discovery, Gas, User, Whale):
 
     def __init__(self) -> None:
         super().__init__()

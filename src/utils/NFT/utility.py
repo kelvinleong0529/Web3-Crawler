@@ -1,57 +1,12 @@
+from ctypes import util
 import datetime
 import requests
+
 
 class Utlity:
 
     def __init__(self) -> None:
         pass
-
-    def get_value(self, input_dict: dict, key: str) -> dict | str:
-        if not self.is_dict(input_dict):
-            raise TypeError("Only accepts dictionary as arguments")
-        if key not in input_dict:
-            return "N/A"
-        if self.is_dict(input_dict[key]):
-            return input_dict[key]
-        else:
-            return str(input_dict[key])
-
-    # function to remove duplicates in a dictionary list
-    def remove_duplicate_in_dict_list(self, input: list) -> list:
-        if not self.is_list(input):
-            raise TypeError("Only accepts LIST as arguments")
-        return [dict(t) for t in {tuple(d.items()) for d in input}]
-
-    def get_url_response(self, url: str, proxy_dict: dict | None) -> tuple:
-        """ make a GET request to the url end point, and return the response in json format
-        """
-        if not self.is_str(url):
-            raise TypeError("Invalid URL / API passed!")
-        if not (self.is_dict(proxy_dict) or self.is_none(proxy_dict)):
-            raise TypeError("proxy_dict must be DICTIONARY type")
-
-        # is_sucess TRUE means successful GET request
-        is_success, response = None, None
-        try:
-            response = requests.get(url=url, proxies=proxy_dict)
-            is_success = True
-            response = response.json()
-        except requests.ConnectionError as e:
-            print(
-                "Connection Error, make sure you are connected to the Internet!"
-            )
-            print(str(e))
-            is_success = False
-        except requests.Timeout as e:
-            print("Timeout Error!")
-            print(str(e))
-            is_success = False
-        except requests.RequestException as e:
-            print("General Error, something unexpected happen!")
-            print(str(e))
-        except KeyboardInterrupt:
-            print("Program was forced to close externally")
-        return (is_success, response)
 
     @staticmethod
     def is_int(input: int) -> bool:
@@ -93,17 +48,70 @@ class Utlity:
     def str_capitalize(input: str) -> str:
         return input.capitalize()
 
-    @staticmethod
+    @classmethod
     # function to join the target list with "," and merge into a string
-    def list_to_str(input: list) -> str:
-        return ",".join(input)
+    def list_to_str(cls, input_list: list) -> str:
+        if not cls.is_list(input_list):
+            raise TypeError("Only accepts list type argument")
+        return ",".join(input_list)
 
-    def timestamp_to_utc(self, timestamp: str | None) -> str:
+    @classmethod
+    def get_value(cls, input_dict: dict, key: str) -> dict | list | str:
+        if not cls.is_dict(input_dict):
+            raise TypeError("Only accepts dictionary as arguments")
+        if key not in input_dict:
+            return "N/A"
+        if cls.is_dict(input_dict[key]) or cls.is_list(input_dict[key]):
+            return input_dict[key]
+        else:
+            return str(input_dict[key])
+
+    @classmethod
+    # function to remove duplicates in a dictionary list
+    def remove_duplicate_in_dict_list(cls, input: list) -> list:
+        if not cls.is_list(input):
+            raise TypeError("Only accepts LIST as arguments")
+        return [dict(t) for t in {tuple(d.items()) for d in input}]
+
+    @classmethod
+    def get_url_response(cls, url: str, proxy_dict: dict | None) -> tuple:
+        """ make a GET request to the url end point, and return the response in json format
+        """
+        if not cls.is_str(url):
+            raise TypeError("Invalid URL / API passed!")
+        if not (cls.is_dict(proxy_dict) or cls.is_none(proxy_dict)):
+            raise TypeError("proxy_dict must be DICTIONARY type")
+
+        # is_sucess TRUE means successful GET request
+        is_success, response = None, None
+        try:
+            response = requests.get(url=url, proxies=proxy_dict)
+            is_success = True
+            response = response.json()
+        except requests.ConnectionError as e:
+            print(
+                "Connection Error, make sure you are connected to the Internet!"
+            )
+            print(str(e))
+            is_success = False
+        except requests.Timeout as e:
+            print("Timeout Error!")
+            print(str(e))
+            is_success = False
+        except requests.RequestException as e:
+            print("General Error, something unexpected happen!")
+            print(str(e))
+        except KeyboardInterrupt:
+            print("Program was forced to close externally")
+        return (is_success, response)
+
+    @classmethod
+    def timestamp_to_utc(cls, timestamp: str | None) -> str:
         """convert timestamp to utc time format
         """
-        if self.is_none(timestamp):
+        if cls.is_none(timestamp):
             return "N/A"
-        if not self.is_str(timestamp):
+        if not cls.is_str(timestamp):
             raise TypeError("Timestamp must be STRING format")
         try:
             return str(

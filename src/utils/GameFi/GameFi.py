@@ -15,9 +15,6 @@ class GameFiScraper(Utility):
                            limit: int = None,
                            proxy_dict: dict = None) -> list:
 
-        # validate the input parameters
-        if not super().is_list(category):
-            raise TypeError("Category argument should be LIST type")
         category_string = super().list_to_str(category)
         limit = super().validate_limit(limit)
 
