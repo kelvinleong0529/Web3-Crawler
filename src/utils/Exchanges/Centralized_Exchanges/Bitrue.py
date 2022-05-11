@@ -142,6 +142,3 @@ class BitrueScraper:
             token_details["symbols"] = [symbol for symbol in symbols]
 
         return token_details
-
-
-print(BitrueScraper().get_token_details("BTC"))
