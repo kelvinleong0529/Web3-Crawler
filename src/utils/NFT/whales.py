@@ -1,7 +1,7 @@
-from NFT_scraper_base_class import NFT_scraper_validation_class
+from .validation import validation_class
 
 
-class NFT_scraper_whale_class(NFT_scraper_validation_class):
+class whale_class(validation_class):
 
     def __init__(self) -> None:
         super().__init__()

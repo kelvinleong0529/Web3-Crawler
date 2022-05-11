@@ -1,9 +1,7 @@
-import requests
-
-from NFT_scraper_base_class import *
+from .validation import validation_class
 
 
-class NFT_scraper_user_base_class(NFT_scraper_validation_class):
+class user_base_class(validation_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -64,7 +62,7 @@ class NFT_scraper_user_base_class(NFT_scraper_validation_class):
         return {}
 
 
-class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
+class user_gallery(user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -156,7 +154,7 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
         return user_gallery_list
 
 
-class NFT_scraper_user_collection(NFT_scraper_user_base_class):
+class user_collection(user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -266,7 +264,7 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
         return user_collection_list
 
 
-class NFT_scraper_user_activity(NFT_scraper_user_base_class):
+class user_activity(user_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -377,9 +375,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
         return user_activity_list
 
 
-class NFT_scraper_user_class(NFT_scraper_user_collection,
-                             NFT_scraper_user_gallery,
-                             NFT_scraper_user_activity):
+class user_class(user_collection, user_gallery, user_activity):
 
     def __init__(self) -> None:
         super().__init__()

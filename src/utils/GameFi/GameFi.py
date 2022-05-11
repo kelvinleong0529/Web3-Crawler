@@ -1,4 +1,3 @@
-from typing import Type
 from GameFi_scraper_base_class import GameFi_scraper_utility_cass
 
 

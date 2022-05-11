@@ -1,7 +1,7 @@
-from NFT_scraper_base_class import NFT_scraper_validation_class
+from .validation import validation_class
 
 
-class NFT_scraper_collection_base_class(NFT_scraper_validation_class):
+class collection_base_class(validation_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -14,7 +14,7 @@ class NFT_scraper_collection_base_class(NFT_scraper_validation_class):
             raise TypeError("collection_id argument must be STRING type")
 
 
-class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
+class collection_activity(collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -122,7 +122,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
         return collection_activity_list
 
 
-class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
+class collection_detail(collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -191,7 +191,7 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
         return collection_details
 
 
-class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
+class collection_asset(collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -287,7 +287,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
         return collection_asset_list
 
 
-class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
+class collection_holder(collection_base_class):
 
     def __init__(self) -> None:
         super().__init__()
@@ -364,10 +364,8 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
         return self.__collection_holders_list
 
 
-class NFT_scraper_collection_class(NFT_scraper_collection_activity,
-                                   NFT_scraper_collection_detail,
-                                   NFT_scraper_collection_asset,
-                                   NFT_scraper_collection_holder):
+class collection_class(collection_activity, collection_detail,
+                       collection_asset, collection_holder):
 
     def __init__(self) -> None:
         super().__init__()
