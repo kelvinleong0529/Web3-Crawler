@@ -48,12 +48,13 @@ class HoneypotScraper:
     def str_strip(input: str) -> str:
         return input.strip()
 
-    def get_url_response(self, url: str, proxy_dict: dict | None) -> tuple:
+    @classmethod
+    def get_url_response(cls, url: str, proxy_dict: dict | None) -> tuple:
         """ make a GET request to the url end point, and return the response in json format
         """
-        if not self.is_str(url):
+        if not cls.is_str(url):
             raise TypeError("Invalid URL / API passed!")
-        if not (self.is_dict(proxy_dict) or self.is_none(proxy_dict)):
+        if not (cls.is_dict(proxy_dict) or cls.is_none(proxy_dict)):
             raise TypeError("proxy_dict must be DICTIONARY type")
 
         # is_sucess TRUE means successful GET request
@@ -102,7 +103,11 @@ class HoneypotScraper:
             for network in network_target.items():
                 honeypot_function = network[-1]["function"]
                 honeypot_network = network[-1]["network"]
-                if honeypot_function(honeypot_network, address, proxy_dict):
+                honeypot_result = honeypot_function(honeypot_network, address,
+                                                    proxy_dict)
+                if honeypot_result is None:
+                    continue
+                if honeypot_result:
                     is_honeypot += 1
                 else:
                     non_honeypot += 1
@@ -118,22 +123,26 @@ class HoneypotScraper:
             }
         return {"message": "Target Network not supported!"}
 
-    # function to check honeypot on "rugdoc", reference website: https://rugdoc.io/honeypot/
-    def __check_rugdoc(self, network: str, address: str,
+    @classmethod
+    def __check_rugdoc(cls, network: str, address: str,
                        proxy_dict: dict | None) -> bool | None:
+        """ function to check honeypot on "rugdoc", reference website: https://rugdoc.io/honeypot/
+        """
         api = "https://api.{network}.com/api?module=contract&action=getsourcecode&address={address}".format(
             network=network, address=address)
-        is_success, response = self.get_url_response(url=api,
-                                                     proxy_dict=proxy_dict)
+        is_success, response = cls.get_url_response(url=api,
+                                                    proxy_dict=proxy_dict)
         if is_success:
             return True if response["result"][0]["ABI"] in [
                 "Contract source code not verified"
             ] else False
         return None
 
-    # function to check honeypot on "honeypot.is", reference website: https://honeypot.is/
+    @classmethod
     def __check_honeypot_is(self, network: str, address: str,
                             proxy_dict: dict | None) -> bool | None:
+        """ function to check honeypot on "honeypot.is", reference website: https://honeypot.is/
+        """
         api = "https://aywt3wreda.execute-api.eu-west-1.amazonaws.com/default/IsHoneypot?chain={network}&token={address}".format(
             address=address, network=network)
         is_success, response = self.get_url_response(url=api,

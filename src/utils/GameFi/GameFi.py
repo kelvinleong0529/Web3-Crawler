@@ -3,14 +3,14 @@ from .utility import Utility
 
 class GameFiScraper(Utility):
 
+    __api = "https://v2.gamefi.org/_next/data/05TfXTSF5_7vpLam60k8c/hub.json?category={category}&page={page_index}"
+
     def __init__(self) -> None:
         super().__init__()
 
-    def get_value(self, input_dict: dict, key: str) -> dict | str:
-        return super().get_value(input_dict, key)
-
+    @classmethod
     # function to filter GameFi tokens by category(s), reference website: https://v2.gamefi.org/
-    def search_by_category(self,
+    def search_by_category(cls,
                            category: list,
                            limit: int = None,
                            proxy_dict: dict = None) -> list:
@@ -29,8 +29,8 @@ class GameFiScraper(Utility):
         while not finished_scraping:
 
             # make GET request to the API endpoint
-            api = "https://v2.gamefi.org/_next/data/05TfXTSF5_7vpLam60k8c/hub.json?category={category}&page={page_index}".format(
-                category=category_string, page_index=page_index)
+            api = cls.__api.format(category=category_string,
+                                   page_index=page_index)
             is_success, response = super().get_url_response(
                 url=api, proxy_dict=proxy_dict)
 
@@ -55,75 +55,75 @@ class GameFiScraper(Utility):
                     token = {}
 
                     # gamefi token details
-                    token["game_name"] = self.__get_value(
+                    token["game_name"] = super().get_value(
                         token_iterator, "game_name")
-                    token["verified"] = self.__get_value(
+                    token["verified"] = super().get_value(
                         token_iterator, "verified")
-                    token["network"] = self.__get_value(
+                    token["network"] = super().get_value(
                         token_iterator, "network_available")
-                    token["address"] = self.__get_value(
+                    token["address"] = super().get_value(
                         token_iterator, "token_address")
-                    token["category"] = self.__get_value(
+                    token["category"] = super().get_value(
                         token_iterator, "category")
-                    token["developer"] = self.__get_value(
+                    token["developer"] = super().get_value(
                         token_iterator, "developer")
-                    token["language"] = self.__get_value(
+                    token["language"] = super().get_value(
                         token_iterator, "language")
-                    token["hashtags"] = self.__get_value(
+                    token["hashtags"] = super().get_value(
                         token_iterator, "hashtags")
-                    token["description"] = self.__get_value(
+                    token["description"] = super().get_value(
                         token_iterator, "short_description")
 
                     # gamefi token IGO info
-                    token["ido_date"] = self.__get_value(
+                    token["ido_date"] = super().get_value(
                         token_iterator, "ido_date")
-                    token["ido_type"] = self.__get_value(
+                    token["ido_type"] = super().get_value(
                         token_iterator, "ido_type")
-                    token["ido_link"] = self.__get_value(
+                    token["ido_link"] = super().get_value(
                         token_iterator, "gamefi_ido_link")
-                    token["igo_price"] = self.__get_value(
+                    token["igo_price"] = super().get_value(
                         token_iterator, "token_price")
-                    token["igo_roi"] = self.__get_value(token_iterator, "roi")
+                    token["igo_roi"] = super().get_value(token_iterator, "roi")
 
                     # gamefi token pricing info
-                    token["price"] = self.__get_value(token_iterator, "price")
-                    token["price_change_24h"] = self.__get_value(
+                    token["price"] = super().get_value(token_iterator, "price")
+                    token["price_change_24h"] = super().get_value(
                         token_iterator, "price_change_24h")
-                    token["price_change_7d"] = self.__get_value(
+                    token["price_change_7d"] = super().get_value(
                         token_iterator, "price_change_7d")
-                    token["volume_24h"] = self.__get_value(
+                    token["volume_24h"] = super().get_value(
                         token_iterator, "volume_24h")
-                    token["market_cap"] = self.__get_value(
+                    token["market_cap"] = super().get_value(
                         token_iterator, "market_cap")
 
                     # gamefi important links and URL
-                    token["official_website_link"] = self.__get_value(
+                    token["official_website_link"] = super().get_value(
                         token_iterator, "official_website")
-                    token["web_game_link"] = self.__get_value(
+                    token["web_game_link"] = super().get_value(
                         token_iterator, "web_game_link")
-                    token["android_link"] = self.__get_value(
+                    token["android_link"] = super().get_value(
                         token_iterator, "android_link")
-                    token["ios_link"] = self.__get_value(
+                    token["ios_link"] = super().get_value(
                         token_iterator, "ios_link")
-                    token["game_pc_link"] = self.__get_value(
+                    token["game_pc_link"] = super().get_value(
                         token_iterator, "game_pc_link")
 
                     # gamefi token social media info
-                    token["twitter"] = self.__get_value(
+                    token["twitter"] = super().get_value(
                         token_iterator, "twitter_link")
-                    token["medium"] = self.__get_value(token_iterator,
-                                                       "medium_link")
-                    token["discord"] = self.__get_value(
+                    token["medium"] = super().get_value(
+                        token_iterator, "medium_link")
+                    token["discord"] = super().get_value(
                         token_iterator, "discord_link")
-                    token["telegram"] = self.__get_value(
+                    token["telegram"] = super().get_value(
                         token_iterator, "official_telegram_link")
 
                     # gamefi Coin Market Cap info
-                    token["cmc_id"] = self.__get_value(token_iterator,
-                                                       "cmc_id")
-                    token["cmc_slug"] = self.__get_value(
+                    token["cmc_id"] = super().get_value(
+                        token_iterator, "cmc_id")
+                    token["cmc_slug"] = super().get_value(
                         token_iterator, "coinmarketcap_slug")
-                    token["cmc_rank"] = self.__get_value(
+                    token["cmc_rank"] = super().get_value(
                         token_iterator, "cmc_rank")
 
                     token_detail_list.append(token)

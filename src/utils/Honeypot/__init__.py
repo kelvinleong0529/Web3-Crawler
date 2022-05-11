@@ -1,1 +1,1 @@
-from .honeypot import honeypot_scraper
+from .honeypot import HoneypotScraper

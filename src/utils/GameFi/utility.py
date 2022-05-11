@@ -1,5 +1,7 @@
 class Utility:
 
+    LIMIT = 20
+
     def __init__(self) -> None:
         pass
 
@@ -24,29 +26,31 @@ class Utility:
     def list_to_str(input: list) -> str:
         return ",".join(input)
 
-    def get_value(self, input_dict: dict, key: str) -> dict | str:
-        if not self.is_dict(input_dict):
+    @classmethod
+    def get_value(cls, input_dict: dict, key: str) -> dict | str:
+        if not cls.is_dict(input_dict):
             raise TypeError("Only accepts dictionary as arguments")
         if key not in input_dict:
             return "N/A"
-        if self.is_dict(input_dict[key]):
+        if cls.is_dict(input_dict[key]) or cls.is_list(input_dict[key]):
             return input_dict[key]
         else:
             return str(input_dict[key])
 
-    def get_url_response(self, url: str, proxy_dict: dict | None) -> tuple:
+    @classmethod
+    def get_url_response(cls, url: str, proxy_dict: dict | None) -> tuple:
         """ make a GET request to the url end point, and return the response in json format
         """
-        if not self.is_str(url):
+        if not cls.is_str(url):
             raise TypeError("Invalid URL / API passed!")
-        if not (self.is_dict(proxy_dict) or self.is_none(proxy_dict)):
+        if not (cls.is_dict(proxy_dict) or cls.is_none(proxy_dict)):
             raise TypeError("proxy_dict must be DICTIONARY type")
 
+    @classmethod
     # function to validate the "limit" parameter
-    def validate_limit(self, limit: int | None) -> str:
-        LIMIT = 20
+    def validate_limit(cls, limit: int | None) -> str:
         if limit is None:
-            return LIMIT
-        if not self.is_int(limit):
+            return cls.LIMIT
+        if not cls.is_int(limit):
             raise TypeError("limit parameter must be INTEGER type")
-        return self.int_to_str(limit)
+        return cls.int_to_str(limit)
