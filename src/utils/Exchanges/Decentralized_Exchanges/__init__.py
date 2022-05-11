@@ -1,1 +1,1 @@
-from .Solana import Solana_scraper
+from .solana import SolanaScraper

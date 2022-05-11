@@ -1,0 +1,1 @@
+from .bitrue import BitrueScraper
