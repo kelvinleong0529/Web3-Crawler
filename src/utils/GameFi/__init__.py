@@ -1,1 +1,1 @@
-from .gamefi import GameFi_scraper
+from .gamefi import GameFiScraper

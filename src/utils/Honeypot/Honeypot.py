@@ -1,8 +1,7 @@
-from typing import Type
 import requests
 
 
-class honeypot_scraper:
+class HoneypotScraper:
 
     # all honeypot validator functions return TRUE if detects any honeypot and vice-versa
     def __init__(self) -> None:

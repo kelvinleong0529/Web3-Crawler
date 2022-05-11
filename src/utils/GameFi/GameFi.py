@@ -1,7 +1,7 @@
-from .utility import utility_cass
+from .utility import Utility
 
 
-class gamefi_scraper(utility_cass):
+class GameFiScraper(Utility):
 
     def __init__(self) -> None:
         super().__init__()
