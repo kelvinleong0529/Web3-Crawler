@@ -10,34 +10,39 @@ class NFT_scraper_user_base_class(NFT_scraper_validation_class):
         self.__user_details_api = "https://api.nftbase.com/web/api/v1/user/info/address?address={address}"
         self.user_api = "https://api.nftbase.com/web/api/v1/user/{feature}?user_id={{user_id}}&offset={{offset}}&limit={{limit_per_page}}"
 
-    def get_user_id_by_address(self,
-                               user_address: str,
-                               proxy_dict: dict = None) -> str:
-
+    def validate_user_address(self, user_address: str) -> None:
         if not super().is_str(user_address):
-            raise TypeError("user_address argument must be a STRING type")
+            raise TypeError("user_address argument must be STRING type")
+
+    def get_user_id_by_address(self, user_address: str,
+                               proxy_dict: dict | None) -> str | None:
+        """ retrieve user_id based on user_address, return "None" if failed to get
+        """
+        self.validate_user_address(user_address)
 
         api = self.__user_details_api.format(address=user_address)
-        user_id = None
-        response = requests.get(url=api, proxies=proxy_dict)
-        if str(response.status_code) == "200":
-            user_id = response.json()["data"]["id"]
-        return user_id
+        is_success, response = super().get_url_response(url=api,
+                                                        proxy_dict=proxy_dict)
+        if is_success:
+            return response["data"]["id"]
 
-    def get_user_details(self,
-                         user_address: str,
-                         proxy_dict: dict = None) -> dict:
+        return None
 
-        # create a dict to store the scraped results
-        user_details = {}
-
-        if not super().is_str(user_address):
-            raise TypeError("user_address argument must be a STRING type")
+    def get_user_details(self, user_address: str,
+                         proxy_dict: dict | None) -> dict:
+        """ retrieve user details based on user_address
+        """
+        self.validate_user_address(user_address)
 
         api = self.__user_details_api.format(address=user_address)
-        response = requests.get(url=api, proxies=proxy_dict)
-        if str(response.status_code) == "200":
-            response = response.json()
+        is_success, response = super().get_url_response(url=api,
+                                                        proxy_dict=proxy_dict)
+
+        if is_success:
+
+            # create a dicr to store the user details
+            user_details = {}
+
             data = response["data"]
 
             user_details["id"] = self.get_value(data, "id")
@@ -54,7 +59,9 @@ class NFT_scraper_user_base_class(NFT_scraper_validation_class):
             user_details["web_url"] = self.get_value(data, "web_url")
             user_details["banner_image"] = self.get_value(data, "banner_image")
 
-        return user_details
+            return user_details
+
+        return {}
 
 
 class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
@@ -64,28 +71,23 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
         self.__api = self.user_api.format(
             feature="gallery") + "&sort={sort_option}"
 
-    def get_value(self, input_dict: dict, key: str) -> str:
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
         return super().get_value(input_dict, key)
 
     def get_user_gallery(self,
                          user_address: str,
                          limit_per_page: int = None,
                          limit: int = None,
-                         sort_option: str = "Market Cap",
+                         input_sort_option: str = "Market Cap",
                          proxy_dict: dict = None) -> list:
 
         # create a list to store the scrape results
         user_gallery_list = []
 
-        # --------------------------------------------
         # validate the input parameters
-        # --------------------------------------------
-        # 1. sort_option
-        sort_option = super().get_sort_option(sort_option=sort_option)
-        # 2. limit_per_page
+        sort_option = super().get_sort_option(sort_option=input_sort_option)
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
-        # 3. limit
         limit = super().validate_limit(limit=limit)
 
         # retrieve the user id from user address
@@ -104,11 +106,12 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                                     offset=offset,
                                     limit_per_page=limit_per_page,
                                     sort_option=sort_option)
-            response = requests.get(url=api, proxies=proxy_dict)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
             # if the request is successful
-            if str(response.status_code) == "200":
-                data = response.json()["data"]
+            if is_success:
+                data = response["data"]
 
                 # if the response returns blank or empty data, break the loop
                 if not data:
@@ -142,7 +145,7 @@ class NFT_scraper_user_gallery(NFT_scraper_user_base_class):
                     # append the result into the list
                     user_gallery_list.append(user_gallery)
 
-                    # increment the scraped count by 1
+                    # increment the scraped_count by 1
                     scraped_count += 1
 
                 offset += limit_per_page
@@ -160,21 +163,21 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
         self.__api = self.user_api.format(
             feature="collection") + "&sort={sort_option}"
 
-    def get_value(self, input_dict: dict, key: str) -> str:
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
         return super().get_value(input_dict, key)
 
     def get_user_collection(self,
                             user_address: str,
                             limit_per_page: int = None,
                             limit: int = None,
-                            sort_option: str = "Market Cap",
+                            input_sort_option: str = "Market Cap",
                             proxy_dict: dict = None) -> list:
 
         # create a list to store the scrape results
         user_collection_list = []
 
         # validate the input parameters
-        sort_option = super().get_sort_option(sort_option=sort_option)
+        sort_option = super().get_sort_option(sort_option=input_sort_option)
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)
@@ -195,11 +198,12 @@ class NFT_scraper_user_collection(NFT_scraper_user_base_class):
                                     offset=offset,
                                     limit_per_page=limit_per_page,
                                     sort_option=sort_option)
-            response = requests.get(url=api, proxies=proxy_dict)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
             # if the request is successful
-            if str(response.status_code) == "200":
-                data = response.json()["data"]
+            if is_success:
+                data = response["data"]
 
                 # if the response returns blank or empty data, break the loop
                 if not data:
@@ -269,7 +273,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
         self.__api = self.user_api.format(
             feature="activities") + "&action={action_list}"
 
-    def get_value(self, input_dict: dict, key: str) -> str:
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
         return super().get_value(input_dict, key)
 
     def get_user_activity(self,
@@ -287,8 +291,6 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)
 
-        if not super().is_list(action_list):
-            raise TypeError("action_list argument must be LIST type")
         # check the action list to see if it's valid
         super().validate_action_list(input=action_list)
         action_list = super().list_to_str(taget_list=action_list)
@@ -309,11 +311,12 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                                     offset=offset,
                                     limit_per_page=limit_per_page,
                                     action_list=action_list)
-            response = requests.get(url=api, proxies=proxy_dict)
+            is_sucess, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
             # if the request is successful
-            if str(response.status_code) == "200":
-                data = response.json()["data"]
+            if is_sucess:
+                data = response["data"]
 
                 # if the response returns blank or empty data, break the loop
                 if not data:
@@ -328,7 +331,7 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
                     # create a dict to store the details
                     user_activity = {}
 
-                    # NFT activity target user (BUY from or SELL to)
+                    # NFT activity involved user (user who BUY from or SELL to)
                     target = self.get_value(user_activities, "from_or_to")
                     user_activity["target_user_id"] = self.get_value(
                         target, "id")
@@ -370,6 +373,8 @@ class NFT_scraper_user_activity(NFT_scraper_user_base_class):
 
         user_activity_list = super().remove_duplicate_in_dict_list(
             user_activity_list)
+
+        return user_activity_list
 
 
 class NFT_scraper_user_class(NFT_scraper_user_collection,

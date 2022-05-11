@@ -1,7 +1,4 @@
-from importlib.resources import is_resource
-import requests
-
-from NFT_scraper_base_class import *
+from NFT_scraper_base_class import NFT_scraper_validation_class
 
 
 class NFT_scraper_collection_base_class(NFT_scraper_validation_class):
@@ -10,10 +7,11 @@ class NFT_scraper_collection_base_class(NFT_scraper_validation_class):
         super().__init__()
         self.collection_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
 
-    def validate_collection_id(self, collection_id: str) -> str:
+    def validate_collection_id(self, collection_id: str) -> None:
+        """ validate the collection_id and remvoes any trailing whitespaces
+        """
         if not super().is_str(collection_id):
             raise TypeError("collection_id argument must be STRING type")
-        return super().str_strip(collection_id)
 
 
 class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
@@ -22,7 +20,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
         super().__init__()
         self.__FEATURE = "activities"
 
-    def get_value(self, input_dict: dict, key: str) -> str:
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
         return super().get_value(input_dict, key)
 
     # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
@@ -36,7 +34,7 @@ class NFT_scraper_collection_activity(NFT_scraper_collection_base_class):
         collection_activity_list = []
 
         # validate the input parameters
-        collection_id = super().validate_collection_id(collection_id)
+        super().validate_collection_id(collection_id)
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)
@@ -130,7 +128,7 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
         super().__init__()
         self.__api = "https://api.nftbase.com/web/api/v1/collection/detail?collection_id={collection_id}"
 
-    def get_value(self, input_dict: dict, key: str) -> str:
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
         return super().get_value(input_dict, key)
 
     # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
@@ -142,7 +140,7 @@ class NFT_scraper_collection_detail(NFT_scraper_collection_base_class):
         collection_details = {}
 
         # validate the input parameters
-        collection_id = super().validate_collection_id(collection_id)
+        super().validate_collection_id(collection_id)
 
         # make GET request to the API endpoint
         api = self.__api.format(collection_id=collection_id)
@@ -199,7 +197,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
         super().__init__()
         self.__api = "https://api.nftbase.com/web/api/v1/graph/asset/search?collection_id={collection_id}&offset={offset}&limit={limit_per_page}"
 
-    def get_value(self, input_dict: dict, key: str) -> str:
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
         return super().get_value(input_dict, key)
 
     def get_collection_asset(self,
@@ -212,7 +210,7 @@ class NFT_scraper_collection_asset(NFT_scraper_collection_base_class):
         collection_asset_list = []
 
         # validate the input parameters
-        collection_id = super().validate_collection_id(collection_id)
+        super().validate_collection_id(collection_id)
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)
@@ -296,7 +294,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
         self.__FEATURE = "holders"
         self.__collection_holders_list = []
 
-    def get_value(self, input_dict: dict, key: str) -> str:
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
         return super().get_value(input_dict, key)
 
     def get_collection_holder(self,
@@ -309,7 +307,7 @@ class NFT_scraper_collection_holder(NFT_scraper_collection_base_class):
         self.__collection_holders_list.clear()
 
         # validate the input parameters
-        collection_id = super().validate_collection_id(collection_id)
+        super().validate_collection_id(collection_id)
         limit_per_page = super().validate_limit_per_page(
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)

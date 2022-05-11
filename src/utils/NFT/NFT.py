@@ -19,7 +19,7 @@ class NFT_scraper(NFT_scraper_collection_class, NFT_scraper_user_class,
 
 my_NFT_scraper = NFT_scraper()
 NFT_scraper().scraper_info()
-results = my_NFT_scraper.get_collection_activity(
-    limit=5,collection_id="otherdeed")
+results = my_NFT_scraper.get_collection_activity(limit=5,
+                                                 collection_id="otherdeed")
 for result in results:
     print(result)

@@ -1,32 +1,25 @@
-import requests
-
-from NFT_scraper_base_class import NFT_scraper_base_class
+from NFT_scraper_base_class import NFT_scraper_validation_class
 
 
-class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
+class NFT_scraper_extra_feature_class(NFT_scraper_validation_class):
 
     def __init__(self) -> None:
         super().__init__()
         self.extra_features_api = "https://api.nftbase.com/web/api/v1/home/list?name={feature}&limit={limit_per_page}&offset={offset}"
 
-    def __get_featured_nft(self, feature: str, limit_per_page: int, limit: int,
-                           proxy_dict: dict) -> list:
+    def __get_featured_nft(self, feature: str, limit_per_page: int | None,
+                           limit: int | None, proxy_dict: dict | None) -> list:
 
         featured_nft_list = []
 
         # validate the input parameters
-        limit_per_page = super().validate_limit_per_page(
-            limit_per_page=limit_per_page)
-        limit = super().validate_limit(limit=limit)
+        limit_per_page = super().validate_limit_per_page(limit_per_page)
+        limit = super().validate_limit(limit)
 
         # variables for scraping
         finished_scraping = False
         offset = 0
         scraped_count = 1
-
-        # scraping parameters
-        limit_per_page = limit_per_page if limit_per_page else self.LIMIT_PER_PAGE
-        limit = limit if limit else self.LIMIT
 
         while offset <= limit and not finished_scraping:
 
@@ -34,10 +27,11 @@ class NFT_scraper_extra_feature_class(NFT_scraper_base_class):
             api = self.extra_features_api.format(feature=feature,
                                                  limit_per_page=limit_per_page,
                                                  offset=offset)
-            response = requests.get(url=api, proxies=proxy_dict)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
             # if the request is successful
-            if str(response.status_code) == "200":
+            if is_success:
                 data = response.json()["data"]
 
                 # if the response returns blank or empty data, break the loop

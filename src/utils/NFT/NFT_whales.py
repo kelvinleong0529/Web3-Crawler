@@ -1,30 +1,21 @@
-import requests
-
-from NFT_scraper_base_class import NFT_scraper_base_class
+from NFT_scraper_base_class import NFT_scraper_validation_class
 
 
-class NFT_scraper_whale_class(NFT_scraper_base_class):
+class NFT_scraper_whale_class(NFT_scraper_validation_class):
 
     def __init__(self) -> None:
         super().__init__()
         self.__whales_api = "https://api.nftbase.com/web/api/v1/home/list-v3?home_tab={feature}&action={action_list}&price={price_range}&offset={offset}&limit={limit_per_page}"
 
-    def get_value(self, input_dict: dict, key: str) -> str:
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
         return super().get_value(input_dict, key)
 
-    # function to validate the "price_range" input parameter
-    def __validate_price_range(self, price_range: int) -> str:
-        if super().is_none(price_range):
-            return ""
-        if not super().is_int(price_range):
-            raise TypeError("price_range argument must be a INTEGER type")
-        return super().int_to_str(price_range)
-
     # function to scrape the nfts based on the input feature
-    def __get_featured_nft(self, feature: str, action_list: list,
-                           price_range: int, limit_per_page: int, limit: int,
-                           proxy_dict: dict) -> list:
+    def __get_featured_nft(self, feature: str, action_list: list | None,
+                           price_range: int | None, limit_per_page: int | None,
+                           limit: int | None, proxy_dict: dict | None) -> list:
 
+        # create a list to store the scraped results
         featured_nft_list = []
 
         # validate the input parameters
@@ -32,15 +23,11 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
             limit_per_page=limit_per_page)
         limit = super().validate_limit(limit=limit)
 
-        if not super().is_list(action_list):
-            raise TypeError("action_list argument must be LIST type")
-        action_list = super().strip_and_capitalize_list(
-            target_list=action_list)
         # check the action list to see if it's valid
         super().validate_action_list(input=action_list)
         action_list = super().list_to_str(input=action_list)
 
-        price_range = self.__validate_price_range(price_range=price_range)
+        price_range = super().validate_price_range(price_range=price_range)
 
         # variables for scraping
         finished_scraping = False
@@ -55,11 +42,12 @@ class NFT_scraper_whale_class(NFT_scraper_base_class):
                                            price_range=price_range,
                                            offset=offset,
                                            limit_per_page=limit_per_page)
-            response = requests.get(url=api, proxies=proxy_dict)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
 
             # if the request is successful
-            if str(response.status_code) == "200":
-                data = response.json()["data"]
+            if is_success:
+                data = response["data"]
 
                 # if the response returns blank or empty data, break the loop
                 if not data:
