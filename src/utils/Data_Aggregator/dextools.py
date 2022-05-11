@@ -1,7 +1,7 @@
 import requests
 
 
-class dextools_scraper:
+class DexToolsScraper:
 
     def __init__(self) -> None:
         self.__headers = {

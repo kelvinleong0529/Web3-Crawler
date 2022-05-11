@@ -1,7 +1,7 @@
 import requests
 
 
-class CoinGecko_scraper:
+class CoinGeckoScraper:
 
     def __init__(self) -> None:
         pass
