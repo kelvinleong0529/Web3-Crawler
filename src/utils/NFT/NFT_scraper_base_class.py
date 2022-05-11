@@ -32,7 +32,7 @@ class NFT_scraper_utility_class:
             raise TypeError("proxy_dict must be DICTIONARY type")
 
         # is_sucess TRUE means successful GET request
-        is_success = None
+        is_success, response = None, None
         try:
             response = requests.get(url=url, proxies=proxy_dict)
             is_success = True
