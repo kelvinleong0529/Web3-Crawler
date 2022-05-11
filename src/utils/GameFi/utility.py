@@ -18,6 +18,10 @@ class Utility:
         return True if isinstance(input, int) else False
 
     @staticmethod
+    def is_none(input: None) -> bool:
+        return True if input is None else False
+
+    @staticmethod
     def int_to_str(input: int) -> str:
         return str(input)
 
