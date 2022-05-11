@@ -1,8 +1,7 @@
 import datetime
 import requests
 
-
-class utility_class:
+class Utlity:
 
     def __init__(self) -> None:
         pass

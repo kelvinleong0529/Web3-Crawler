@@ -1,12 +1,11 @@
-from .collection import collection_class
-from .user import user_class
-from .discovery import discovery_class
-from .whales import whale_class
-from .gas import gas_class
+from collection import Collection
+from user import User
+from discovery import Discovery
+from whales import Whale
+from gas import Gas
 
 
-class NFT_scraper(collection_class, user_class, discovery_class, whale_class,
-                  gas_class):
+class NftScraper(Collection, User, Discovery, Whale, Gas):
 
     def __init__(self) -> None:
         super().__init__()

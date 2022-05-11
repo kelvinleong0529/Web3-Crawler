@@ -1,7 +1,7 @@
-from .validation import validation_class
+from validation import Validation
 
 
-class collection_base_class(validation_class):
+class CollectionBaseClass(Validation):
 
     def __init__(self) -> None:
         super().__init__()
@@ -14,7 +14,7 @@ class collection_base_class(validation_class):
             raise TypeError("collection_id argument must be STRING type")
 
 
-class collection_activity(collection_base_class):
+class CollectionActivity(CollectionBaseClass):
 
     def __init__(self) -> None:
         super().__init__()
@@ -122,76 +122,7 @@ class collection_activity(collection_base_class):
         return collection_activity_list
 
 
-class collection_detail(collection_base_class):
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.__api = "https://api.nftbase.com/web/api/v1/collection/detail?collection_id={collection_id}"
-
-    def get_value(self, input_dict: dict, key: str) -> dict | str:
-        return super().get_value(input_dict, key)
-
-    # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
-    def get_collection_detail(self,
-                              collection_id: str,
-                              proxy_dict: dict = None) -> dict:
-
-        # create a list to store the scrape results
-        collection_details = {}
-
-        # validate the input parameters
-        super().validate_collection_id(collection_id)
-
-        # make GET request to the API endpoint
-        api = self.__api.format(collection_id=collection_id)
-        is_success, response = super().get_url_response(url=api,
-                                                        proxy_dict=proxy_dict)
-
-        # if the request is successful
-        if is_success:
-            data = response["data"]
-
-            # collection basic details
-            collection_details["id"] = self.get_value(data, "id")
-            collection_details["name"] = self.get_value(data, "name")
-            collection_details["image_url"] = self.get_value(data, "image_url")
-            collection_details["banner_image_url"] = self.get_value(
-                data, "banner_image_url")
-            collection_details["description"] = self.get_value(
-                data, "description")
-
-            # collection social media details
-            collection_details["twitter_url"] = self.get_value(
-                data, "twitter_url")
-            collection_details["instagram_url"] = self.get_value(
-                data, "instagram_url")
-            collection_details["external_url"] = self.get_value(
-                data, "external_url")
-            collection_details["discord_url"] = self.get_value(
-                data, "discord_url")
-            collection_details["open_sea_url"] = self.get_value(
-                data, "open_sea_url")
-
-            # collection item details
-            collection_details["item_count"] = self.get_value(
-                data, "item_count")
-            collection_details["owner_count"] = self.get_value(
-                data, "owner_count")
-
-            # collection trading / transaction details
-            collection_details["volume_in_24h"] = self.get_value(
-                data, "volume_in_24h")
-            collection_details["floor_price"] = self.get_value(
-                data, "floor_price")
-            collection_details["mint_price"] = self.get_value(
-                data, "mint_price")
-            collection_details["blue_index"] = self.get_value(
-                data, "blue_index")
-
-        return collection_details
-
-
-class collection_asset(collection_base_class):
+class CollectionAsset(CollectionBaseClass):
 
     def __init__(self) -> None:
         super().__init__()
@@ -287,7 +218,76 @@ class collection_asset(collection_base_class):
         return collection_asset_list
 
 
-class collection_holder(collection_base_class):
+class CollectionDetail(CollectionBaseClass):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.__api = "https://api.nftbase.com/web/api/v1/collection/detail?collection_id={collection_id}"
+
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
+        return super().get_value(input_dict, key)
+
+    # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/
+    def get_collection_detail(self,
+                              collection_id: str,
+                              proxy_dict: dict = None) -> dict:
+
+        # create a list to store the scrape results
+        collection_details = {}
+
+        # validate the input parameters
+        super().validate_collection_id(collection_id)
+
+        # make GET request to the API endpoint
+        api = self.__api.format(collection_id=collection_id)
+        is_success, response = super().get_url_response(url=api,
+                                                        proxy_dict=proxy_dict)
+
+        # if the request is successful
+        if is_success:
+            data = response["data"]
+
+            # collection basic details
+            collection_details["id"] = self.get_value(data, "id")
+            collection_details["name"] = self.get_value(data, "name")
+            collection_details["image_url"] = self.get_value(data, "image_url")
+            collection_details["banner_image_url"] = self.get_value(
+                data, "banner_image_url")
+            collection_details["description"] = self.get_value(
+                data, "description")
+
+            # collection social media details
+            collection_details["twitter_url"] = self.get_value(
+                data, "twitter_url")
+            collection_details["instagram_url"] = self.get_value(
+                data, "instagram_url")
+            collection_details["external_url"] = self.get_value(
+                data, "external_url")
+            collection_details["discord_url"] = self.get_value(
+                data, "discord_url")
+            collection_details["open_sea_url"] = self.get_value(
+                data, "open_sea_url")
+
+            # collection item details
+            collection_details["item_count"] = self.get_value(
+                data, "item_count")
+            collection_details["owner_count"] = self.get_value(
+                data, "owner_count")
+
+            # collection trading / transaction details
+            collection_details["volume_in_24h"] = self.get_value(
+                data, "volume_in_24h")
+            collection_details["floor_price"] = self.get_value(
+                data, "floor_price")
+            collection_details["mint_price"] = self.get_value(
+                data, "mint_price")
+            collection_details["blue_index"] = self.get_value(
+                data, "blue_index")
+
+        return collection_details
+
+
+class CollectionHolder(CollectionBaseClass):
 
     def __init__(self) -> None:
         super().__init__()
@@ -341,6 +341,7 @@ class collection_holder(collection_base_class):
                     if scraped_count > limit:
                         break
 
+                    # create a dict to store the scraped results
                     collection_holder = {}
 
                     # collection holder details
@@ -364,8 +365,8 @@ class collection_holder(collection_base_class):
         return self.__collection_holders_list
 
 
-class collection_class(collection_activity, collection_detail,
-                       collection_asset, collection_holder):
+class Collection(CollectionActivity, CollectionAsset, CollectionDetail,
+                    CollectionHolder):
 
     def __init__(self) -> None:
         super().__init__()

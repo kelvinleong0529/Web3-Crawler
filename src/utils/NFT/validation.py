@@ -1,10 +1,10 @@
-from .utility import utility_class
+from utility import Utlity
 
 
-class validation_class(utility_class):
+class Validation(Utlity):
 
     def __init__(self) -> None:
-        pass
+        super().__init__()
 
     def validate_action_list(self, input: list | None) -> bool:
         """ validate the acion list to see if it's valid

@@ -1,7 +1,7 @@
-from .validation import validation_class
+from validation import Validation
 
 
-class discovery_class(validation_class):
+class Discovery(Validation):
 
     def __init__(self) -> None:
         super().__init__()

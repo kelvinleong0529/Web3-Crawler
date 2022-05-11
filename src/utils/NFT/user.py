@@ -1,7 +1,7 @@
-from .validation import validation_class
+from validation import Validation
 
 
-class user_base_class(validation_class):
+class UserBaseClass(Validation):
 
     def __init__(self) -> None:
         super().__init__()
@@ -62,209 +62,7 @@ class user_base_class(validation_class):
         return {}
 
 
-class user_gallery(user_base_class):
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.__api = self.user_api.format(
-            feature="gallery") + "&sort={sort_option}"
-
-    def get_value(self, input_dict: dict, key: str) -> dict | str:
-        return super().get_value(input_dict, key)
-
-    def get_user_gallery(self,
-                         user_address: str,
-                         limit_per_page: int = None,
-                         limit: int = None,
-                         input_sort_option: str = "Market Cap",
-                         proxy_dict: dict = None) -> list:
-
-        # create a list to store the scrape results
-        user_gallery_list = []
-
-        # validate the input parameters
-        sort_option = super().get_sort_option(sort_option=input_sort_option)
-        limit_per_page = super().validate_limit_per_page(
-            limit_per_page=limit_per_page)
-        limit = super().validate_limit(limit=limit)
-
-        # retrieve the user id from user address
-        user_id = super().get_user_id_by_address(user_address=user_address,
-                                                 proxy_dict=proxy_dict)
-
-        # variables for scraping
-        finished_scraping = False
-        offset = 0
-        scraped_count = 1
-
-        while offset <= limit and not finished_scraping:
-
-            # make GET request to the API endpoint
-            api = self.__api.format(user_id=user_id,
-                                    offset=offset,
-                                    limit_per_page=limit_per_page,
-                                    sort_option=sort_option)
-            is_success, response = super().get_url_response(
-                url=api, proxy_dict=proxy_dict)
-
-            # if the request is successful
-            if is_success:
-                data = response["data"]
-
-                # if the response returns blank or empty data, break the loop
-                if not data:
-                    finished_scraping = True
-                    continue
-
-                for user_galleries in data:
-
-                    if scraped_count > limit:
-                        break
-
-                    # create a dict to store the details
-                    user_gallery = {}
-
-                    # NFT gallery details
-                    user_gallery["id"] = self.get_value(user_galleries, "id")
-                    user_gallery["image_url"] = self.get_value(
-                        user_galleries, "image_url")
-                    user_gallery["token_id"] = self.get_value(
-                        user_galleries, "token_id")
-                    user_gallery["contract_addr"] = self.get_value(
-                        user_galleries, "contract_addr")
-                    user_gallery["has_watched"] = self.get_value(
-                        user_galleries, "has_watched")
-                    price = self.get_value(user_galleries, "price")
-                    currency = self.get_value(user_galleries, "symbol")
-                    user_gallery["price"] = price + " " + currency
-                    user_gallery["collection_name"] = self.get_value(
-                        user_galleries, "collection_name")
-
-                    # append the result into the list
-                    user_gallery_list.append(user_gallery)
-
-                    # increment the scraped_count by 1
-                    scraped_count += 1
-
-                offset += limit_per_page
-
-        user_gallery_list = super().remove_duplicate_in_dict_list(
-            user_gallery_list)
-
-        return user_gallery_list
-
-
-class user_collection(user_base_class):
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.__api = self.user_api.format(
-            feature="collection") + "&sort={sort_option}"
-
-    def get_value(self, input_dict: dict, key: str) -> dict | str:
-        return super().get_value(input_dict, key)
-
-    def get_user_collection(self,
-                            user_address: str,
-                            limit_per_page: int = None,
-                            limit: int = None,
-                            input_sort_option: str = "Market Cap",
-                            proxy_dict: dict = None) -> list:
-
-        # create a list to store the scrape results
-        user_collection_list = []
-
-        # validate the input parameters
-        sort_option = super().get_sort_option(sort_option=input_sort_option)
-        limit_per_page = super().validate_limit_per_page(
-            limit_per_page=limit_per_page)
-        limit = super().validate_limit(limit=limit)
-
-        # retrieve the user id from user address
-        user_id = super().get_user_id_by_address(user_address=user_address,
-                                                 proxy_dict=proxy_dict)
-
-        # variables for scraping
-        finished_scraping = False
-        offset = 0
-        scraped_count = 1
-
-        while offset <= limit and not finished_scraping:
-
-            # make GET request to the API endpoint
-            api = self.__api.format(user_id=user_id,
-                                    offset=offset,
-                                    limit_per_page=limit_per_page,
-                                    sort_option=sort_option)
-            is_success, response = super().get_url_response(
-                url=api, proxy_dict=proxy_dict)
-
-            # if the request is successful
-            if is_success:
-                data = response["data"]
-
-                # if the response returns blank or empty data, break the loop
-                if not data:
-                    finished_scraping = True
-                    continue
-
-                for user_collections in data:
-
-                    if scraped_count > limit:
-                        break
-
-                    # create a dict to store the details
-                    user_base_collection = {}
-
-                    # NFT collection basic details
-                    user_base_collection["collection_name"] = self.get_value(
-                        user_collections, "collection_name")
-                    user_base_collection["collection_id"] = self.get_value(
-                        user_collections, "collection_id")
-                    user_base_collection[
-                        "collection_image_url"] = self.get_value(
-                            user_collections, "collection_image_url")
-                    user_base_collection["count"] = self.get_value(
-                        user_collections, "count")
-                    user_base_collection["change_in_24h"] = self.get_value(
-                        user_collections, "change_in_24h")
-
-                    items = self.get_value(user_collections, "items")
-
-                    for item in items:
-
-                        # make a copy of the base collection
-                        user_collection = user_base_collection.copy()
-
-                        # NFT collection details
-                        user_collection["id"] = self.get_value(item, "id")
-                        user_collection["image_url"] = self.get_value(
-                            item, "image_url")
-                        user_collection["token_id"] = self.get_value(
-                            item, "token_id")
-                        user_collection["contract_addr"] = self.get_value(
-                            item, "contract_addr")
-                        user_collection["has_watched"] = self.get_value(
-                            item, "has_watched")
-                        user_collection["rarity_rank"] = self.get_value(
-                            item, "rarity_rank")
-                        price = self.get_value(item, "price")
-                        currency = self.get_value(item, "symbol")
-                        user_collection["price"] = price + " " + currency
-
-                        # append the result into the list and increment the offset value by 1
-                        user_collection_list.append(user_collection)
-
-                        scraped_count += 1
-
-                offset += limit_per_page
-
-        user_collection_list = super().remove_duplicate_in_dict_list(
-            user_collection_list)
-        return user_collection_list
-
-
-class user_activity(user_base_class):
+class UserActivity(UserBaseClass):
 
     def __init__(self) -> None:
         super().__init__()
@@ -375,7 +173,209 @@ class user_activity(user_base_class):
         return user_activity_list
 
 
-class user_class(user_collection, user_gallery, user_activity):
+class UserCollection(UserBaseClass):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.__api = self.user_api.format(
+            feature="collection") + "&sort={sort_option}"
+
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
+        return super().get_value(input_dict, key)
+
+    def get_user_collection(self,
+                            user_address: str,
+                            limit_per_page: int = None,
+                            limit: int = None,
+                            input_sort_option: str = "Market Cap",
+                            proxy_dict: dict = None) -> list:
+
+        # create a list to store the scrape results
+        user_collection_list = []
+
+        # validate the input parameters
+        sort_option = super().get_sort_option(sort_option=input_sort_option)
+        limit_per_page = super().validate_limit_per_page(
+            limit_per_page=limit_per_page)
+        limit = super().validate_limit(limit=limit)
+
+        # retrieve the user id from user address
+        user_id = super().get_user_id_by_address(user_address=user_address,
+                                                 proxy_dict=proxy_dict)
+
+        # variables for scraping
+        finished_scraping = False
+        offset = 0
+        scraped_count = 1
+
+        while offset <= limit and not finished_scraping:
+
+            # make GET request to the API endpoint
+            api = self.__api.format(user_id=user_id,
+                                    offset=offset,
+                                    limit_per_page=limit_per_page,
+                                    sort_option=sort_option)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
+
+            # if the request is successful
+            if is_success:
+                data = response["data"]
+
+                # if the response returns blank or empty data, break the loop
+                if not data:
+                    finished_scraping = True
+                    continue
+
+                for user_collections in data:
+
+                    if scraped_count > limit:
+                        break
+
+                    # create a dict to store the details
+                    user_base_collection = {}
+
+                    # NFT collection basic details
+                    user_base_collection["collection_name"] = self.get_value(
+                        user_collections, "collection_name")
+                    user_base_collection["collection_id"] = self.get_value(
+                        user_collections, "collection_id")
+                    user_base_collection[
+                        "collection_image_url"] = self.get_value(
+                            user_collections, "collection_image_url")
+                    user_base_collection["count"] = self.get_value(
+                        user_collections, "count")
+                    user_base_collection["change_in_24h"] = self.get_value(
+                        user_collections, "change_in_24h")
+
+                    items = self.get_value(user_collections, "items")
+
+                    for item in items:
+
+                        # make a copy of the base collection
+                        user_collection = user_base_collection.copy()
+
+                        # NFT collection details
+                        user_collection["id"] = self.get_value(item, "id")
+                        user_collection["image_url"] = self.get_value(
+                            item, "image_url")
+                        user_collection["token_id"] = self.get_value(
+                            item, "token_id")
+                        user_collection["contract_addr"] = self.get_value(
+                            item, "contract_addr")
+                        user_collection["has_watched"] = self.get_value(
+                            item, "has_watched")
+                        user_collection["rarity_rank"] = self.get_value(
+                            item, "rarity_rank")
+                        price = self.get_value(item, "price")
+                        currency = self.get_value(item, "symbol")
+                        user_collection["price"] = price + " " + currency
+
+                        # append the result into the list and increment the offset value by 1
+                        user_collection_list.append(user_collection)
+
+                        scraped_count += 1
+
+                offset += limit_per_page
+
+        user_collection_list = super().remove_duplicate_in_dict_list(
+            user_collection_list)
+        return user_collection_list
+
+
+class UserGallery(UserBaseClass):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.__api = self.user_api.format(
+            feature="gallery") + "&sort={sort_option}"
+
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
+        return super().get_value(input_dict, key)
+
+    def get_user_gallery(self,
+                         user_address: str,
+                         limit_per_page: int = None,
+                         limit: int = None,
+                         input_sort_option: str = "Market Cap",
+                         proxy_dict: dict = None) -> list:
+
+        # create a list to store the scrape results
+        user_gallery_list = []
+
+        # validate the input parameters
+        sort_option = super().get_sort_option(sort_option=input_sort_option)
+        limit_per_page = super().validate_limit_per_page(
+            limit_per_page=limit_per_page)
+        limit = super().validate_limit(limit=limit)
+
+        # retrieve the user id from user address
+        user_id = super().get_user_id_by_address(user_address=user_address,
+                                                 proxy_dict=proxy_dict)
+
+        # variables for scraping
+        finished_scraping = False
+        offset = 0
+        scraped_count = 1
+
+        while offset <= limit and not finished_scraping:
+
+            # make GET request to the API endpoint
+            api = self.__api.format(user_id=user_id,
+                                    offset=offset,
+                                    limit_per_page=limit_per_page,
+                                    sort_option=sort_option)
+            is_success, response = super().get_url_response(
+                url=api, proxy_dict=proxy_dict)
+
+            # if the request is successful
+            if is_success:
+                data = response["data"]
+
+                # if the response returns blank or empty data, break the loop
+                if not data:
+                    finished_scraping = True
+                    continue
+
+                for user_galleries in data:
+
+                    if scraped_count > limit:
+                        break
+
+                    # create a dict to store the details
+                    user_gallery = {}
+
+                    # NFT gallery details
+                    user_gallery["id"] = self.get_value(user_galleries, "id")
+                    user_gallery["image_url"] = self.get_value(
+                        user_galleries, "image_url")
+                    user_gallery["token_id"] = self.get_value(
+                        user_galleries, "token_id")
+                    user_gallery["contract_addr"] = self.get_value(
+                        user_galleries, "contract_addr")
+                    user_gallery["has_watched"] = self.get_value(
+                        user_galleries, "has_watched")
+                    price = self.get_value(user_galleries, "price")
+                    currency = self.get_value(user_galleries, "symbol")
+                    user_gallery["price"] = price + " " + currency
+                    user_gallery["collection_name"] = self.get_value(
+                        user_galleries, "collection_name")
+
+                    # append the result into the list
+                    user_gallery_list.append(user_gallery)
+
+                    # increment the scraped_count by 1
+                    scraped_count += 1
+
+                offset += limit_per_page
+
+        user_gallery_list = super().remove_duplicate_in_dict_list(
+            user_gallery_list)
+
+        return user_gallery_list
+
+
+class User(UserActivity, UserCollection, UserGallery):
 
     def __init__(self) -> None:
         super().__init__()

@@ -1,7 +1,7 @@
-from .validation import validation_class
+from validation import Validation
 
 
-class whale_class(validation_class):
+class Whale(Validation):
 
     def __init__(self) -> None:
         super().__init__()

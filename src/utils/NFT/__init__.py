@@ -1,1 +1,0 @@
-from .NFT import NFT_scraper

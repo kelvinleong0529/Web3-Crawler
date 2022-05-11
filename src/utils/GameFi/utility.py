@@ -1,4 +1,4 @@
-class GameFi_scraper_utility_cass:
+class utility_cass:
 
     def __init__(self) -> None:
         pass

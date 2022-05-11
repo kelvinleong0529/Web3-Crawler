@@ -1,7 +1,7 @@
-from GameFi_scraper_base_class import GameFi_scraper_utility_cass
+from .utility import utility_cass
 
 
-class GameFi_scraper(GameFi_scraper_utility_cass):
+class gamefi_scraper(utility_cass):
 
     def __init__(self) -> None:
         super().__init__()
