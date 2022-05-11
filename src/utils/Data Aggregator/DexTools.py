@@ -23,6 +23,10 @@ class dextools_scraper:
     def is_str(input: str) -> bool:
         return True if isinstance(input, str) else False
 
+    @staticmethod
+    def is_none(input: None) -> bool:
+        return True if input is None else False
+
     def get_value(self, input_dict: dict, key: str) -> dict | str:
         if not self.is_dict(input_dict):
             raise TypeError("Only accepts dictionary as arguments")

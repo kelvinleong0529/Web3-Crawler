@@ -10,103 +10,147 @@ class CoinGecko_scraper:
     def is_str(input: str) -> bool:
         return True if isinstance(input, str) else False
 
+    @staticmethod
+    def is_dict(input: dict) -> bool:
+        return True if isinstance(input, dict) else False
+
+    @staticmethod
+    def is_none(input: None) -> bool:
+        return True if input is None else False
+
+    def get_value(self, input_dict: dict, key: str) -> dict | str:
+        if not self.is_dict(input_dict):
+            raise TypeError("Only accepts dictionary as arguments")
+        if key not in input_dict:
+            return "N/A"
+        if self.is_dict(input_dict[key]):
+            return input_dict[key]
+        else:
+            return str(input_dict[key])
+
+    def get_url_response(self, url: str, proxy_dict: dict | None) -> tuple:
+        """ make a GET request to the url end point, and return the response in json format
+        """
+        if not self.is_str(url):
+            raise TypeError("Invalid URL / API passed!")
+        if not (self.is_dict(proxy_dict) or self.is_none(proxy_dict)):
+            raise TypeError("proxy_dict must be DICTIONARY type")
+
+        # is_sucess TRUE means successful GET request
+        is_success, response = None, None
+        try:
+            response = requests.get(url=url, proxies=proxy_dict)
+            is_success = True
+            response = response.json()
+        except requests.ConnectionError as e:
+            print(
+                "Connection Error, make sure you are connected to the Internet!"
+            )
+            print(str(e))
+            is_success = False
+        except requests.Timeout as e:
+            print("Timeout Error!")
+            print(str(e))
+            is_success = False
+        except requests.RequestException as e:
+            print("General Error, something unexpected happen!")
+            print(str(e))
+        except KeyboardInterrupt:
+            print("Program was forced to close externally")
+        return (is_success, response)
+
     def get_token_details(self,
                           coingecko_id: str,
-                          proxy_dict: dict = None) -> None:
+                          proxy_dict: dict = None) -> dict:
+
+        # validate the input parameters
         if not self.is_str(coingecko_id):
             raise TypeError("coingecko_id must be STRING type")
+
+        # make GET request to the API endpoint
         api = "https://api.coingecko.com/api/v3/coins/{id}?tickers=false&market_data=false".format(
             id=coingecko_id)
-        while True:
-            response = requests.get(api)
-            if str(response.status_code) == "200":
-                response = response.json()
+        is_success, response = self.get_url_response(url=api,
+                                                     proxy_dict=proxy_dict)
 
-                # Basic information
-                self.symbol = response["symbol"]
-                self.name = response["name"]
-                self.hashing_algorithm = response["hashing_algorithm"]
+        # create a dict to store the scrape results
+        token_details = {}
 
-                # Platforms & Blockchain Site URL
-                platforms = response["platforms"]
-                # 1. Ethereum
-                self.ethereum_address = platforms[
-                    "ethereum"] if "ethereum" in platforms else None
-                self.ethereum_site_url = "https://etherscan.io/token/{address}".format(
-                    address=self.ethereum_address
-                ) if self.ethereum_address else None
-                # 2. Binance Smart Chain
-                self.bsc_address = platforms[
-                    "binance-smart-chain"] if "binance-smart-chain" in platforms else None
-                self.bsc_ite_url = "https://bscscan.com/token/{address}".format(
-                    address=self.bsc_address) if self.bsc_address else None
-                # 3. Polygon
-                self.polygon_address = platforms[
-                    "polygon-pos"] if "polygon-pos" in platforms else None
-                self.polygon_site_url = "https://polygonscan.com/token/{address}".format(
-                    address=self.polygon_address
-                ) if self.polygon_address else None
-                # 4. Fantom
-                self.fantom_address = platforms[
-                    "fantom"] if "fantom" in platforms else None
-                self.fantom_site_url = "https://ftmscan.com/token/{address}".format(
-                    address=self.fantom_address
-                ) if self.fantom_address else None
-                # 5. Solana
-                self.solana_address = platforms[
-                    "solana"] if "solana" in platforms else None
-                self.solana_site_url = "https://solscan.io//token/{address}".format(
-                    address=self.solana_address
-                ) if self.solana_address else None
+        if is_success:
 
-                # Description
-                self.description = response["description"]["en"]
+            # Basic information
+            token_details["symbol"] = self.get_value(response, "symbol")
+            token_details["name"] = self.get_value(response, "name")
+            token_details["hashing_algorithm"] = self.get_value(
+                response, "hashing_algorithm")
+            token_details["public_notice"] = self.get_value(
+                response, "public_notice")
+            token_details["additional_notice"] = self.get_value(
+                response, "additional_notice")
 
-                # Categories
-                self.categories = [
-                    category for category in response["categories"] if category
-                ]
+            # Description
+            description = self.get_value(response, "description")
+            token_details["description"] = self.get_value(description, "en")
 
-                # Links
-                links = response["links"]
-                self.homepages = [link for link in links["homepage"] if link]
-                self.official_forum_url = [
-                    link for link in links["official_forum_url"] if link
-                ]
-                self.chat_url = [link for link in links["chat_url"] if link]
-                self.announcement_url = [
-                    link for link in links["announcement_url"] if link
-                ]
+            # Categories
+            token_details["categories"] = [
+                category for category in response["categories"] if category
+            ]
 
-                # Community
-                community = response["community_data"]
-                # 1. Twitter
-                twitter_screen_name = links["twitter_screen_name"]
-                self.twitterUrl = "https://twitter.com/{twitter_screen_name}".format(
-                    twitter_screen_name=twitter_screen_name
-                ) if twitter_screen_name != "" else None
-                self.twitter_followers = community["twitter_followers"]
-                # 2. Telegram
-                telegram_channel_identifier = links[
-                    "telegram_channel_identifier"]
-                self.telegramUrl = "https://t.me/{telegramChannelIdentifier}".format(
-                    telegramChannelIdentifier=telegram_channel_identifier
-                ) if telegram_channel_identifier != "" else None
-                self.telegram_channel_user_count = community[
-                    "telegram_channel_user_count"]
-                # 3. Reddit
-                self.reddit_url = community["subreddit_url"]
+            # Links
+            links = response["links"]
+            token_details["homepages"] = [
+                link for link in links["homepage"] if link
+            ]
+            token_details["official_forum_url"] = [
+                link for link in links["official_forum_url"] if link
+            ]
+            token_details["chat_url"] = [
+                link for link in links["chat_url"] if link
+            ]
+            token_details["announcement_url"] = [
+                link for link in links["announcement_url"] if link
+            ]
 
-                # Scoring
-                self.coingecko_rank = response["coingecko_rank"]
-                self.coingecko_score = response["coingecko_score"]
-                self.community_score = response["community_score"]
-                self.liquidity_score = response["liquidity_score"]
+            # Community
+            community = self.get_value(response, "community_data")
+            # 1. Twitter
+            twitter_screen_name = self.get_value(links, "twitter_screen_name")
+            if twitter_screen_name != "N/A":
+                token_details[
+                    "twitter_url"] = "https://twitter.com/{twitter_screen_name}".format(
+                        twitter_screen_name=twitter_screen_name)
+            token_details["twitter_followers"] = self.get_value(
+                community, "twitter_followers")
+            # 2. Telegram
+            telegram_channel_identifier = self.get_value(
+                links, "telegram_channel_identifier")
+            if telegram_channel_identifier != "N/A":
+                token_details[
+                    "telegram_url"] = "https://t.me/{telegramChannelIdentifier}".format(
+                        telegramChannelIdentifier=telegram_channel_identifier)
+            token_details["telegram_channel_user_count"] = self.get_value(
+                community, "telegram_channel_user_count")
+            # 3. Reddit
+            token_details["reddit_url"] = self.get_value(
+                links, "subreddit_url")
 
-                # Image
-                self.image = requests.get(response["image"]["large"])
+            # Scoring
+            token_details["coingecko_rank"] = self.get_value(
+                links, "coingecko_rank")
+            token_details["coingecko_score"] = self.get_value(
+                links, "coingecko_score")
+            token_details["community_score"] = self.get_value(
+                links, "community_score")
+            token_details["liquidity_score"] = self.get_value(
+                links, "liquidity_score")
 
-                # Last updated time
-                self.last_updated = response["last_updated"]
+            # Image
+            image = self.get_value(response, "image")
+            token_details["image"] = self.get_value(response, "large")
 
-            break
+            # Last updated time
+            token_details["last_updated"] = self.get_value(
+                response, "last_updated")
+
+        return token_details
