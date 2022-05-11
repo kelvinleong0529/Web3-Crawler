@@ -31,7 +31,7 @@ class Utility:
         return ",".join(input)
 
     @classmethod
-    def get_value(cls, input_dict: dict, key: str) -> dict | str:
+    def get_value(cls, input_dict: dict, key: str) -> dict | list | str:
         if not cls.is_dict(input_dict):
             raise TypeError("Only accepts dictionary as arguments")
         if key not in input_dict:

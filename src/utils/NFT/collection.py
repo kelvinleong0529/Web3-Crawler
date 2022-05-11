@@ -222,7 +222,7 @@ class CollectionDetail(CollectionBaseClass):
         super().__init__()
 
     @classmethod
-    def get_value(cls, input_dict: dict, key: str) -> dict | str:
+    def get_value(cls, input_dict: dict, key: str) -> dict | list | str:
         return CollectionBaseClass.get_value(input_dict, key)
 
     # function to get NFT most recent transaction details, refernce website: https://www.nftexplorer.app/

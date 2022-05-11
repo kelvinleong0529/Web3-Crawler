@@ -3,6 +3,8 @@ import requests
 
 class CoinGeckoScraper:
 
+    __api = "https://api.coingecko.com/api/v3/coins/{id}?tickers=false&market_data=false"
+
     def __init__(self) -> None:
         pass
 
@@ -15,25 +17,31 @@ class CoinGeckoScraper:
         return True if isinstance(input, dict) else False
 
     @staticmethod
+    def is_list(input: list) -> bool:
+        return True if isinstance(input, list) else False
+
+    @staticmethod
     def is_none(input: None) -> bool:
         return True if input is None else False
 
-    def get_value(self, input_dict: dict, key: str) -> dict | str:
-        if not self.is_dict(input_dict):
+    @classmethod
+    def get_value(cls, input_dict: dict, key: str) -> dict | list | str:
+        if not cls.is_dict(input_dict):
             raise TypeError("Only accepts dictionary as arguments")
         if key not in input_dict:
             return "N/A"
-        if self.is_dict(input_dict[key]):
+        if cls.is_dict(input_dict[key]) or cls.is_list(input_dict[key]):
             return input_dict[key]
         else:
             return str(input_dict[key])
 
-    def get_url_response(self, url: str, proxy_dict: dict | None) -> tuple:
+    @classmethod
+    def get_url_response(cls, url: str, proxy_dict: dict | None) -> tuple:
         """ make a GET request to the url end point, and return the response in json format
         """
-        if not self.is_str(url):
+        if not cls.is_str(url):
             raise TypeError("Invalid URL / API passed!")
-        if not (self.is_dict(proxy_dict) or self.is_none(proxy_dict)):
+        if not (cls.is_dict(proxy_dict) or cls.is_none(proxy_dict)):
             raise TypeError("proxy_dict must be DICTIONARY type")
 
         # is_sucess TRUE means successful GET request
@@ -59,19 +67,20 @@ class CoinGeckoScraper:
             print("Program was forced to close externally")
         return (is_success, response)
 
-    def get_token_details(self,
+    @classmethod
+    def get_token_details(cls,
                           coingecko_id: str,
                           proxy_dict: dict = None) -> dict:
 
         # validate the input parameters
-        if not self.is_str(coingecko_id):
+        if not cls.is_str(coingecko_id):
             raise TypeError("coingecko_id must be STRING type")
 
         # make GET request to the API endpoint
-        api = "https://api.coingecko.com/api/v3/coins/{id}?tickers=false&market_data=false".format(
+        api = cls.__api.format(
             id=coingecko_id)
-        is_success, response = self.get_url_response(url=api,
-                                                     proxy_dict=proxy_dict)
+        is_success, response = cls.get_url_response(url=api,
+                                                    proxy_dict=proxy_dict)
 
         # create a dict to store the scrape results
         token_details = {}
@@ -79,18 +88,18 @@ class CoinGeckoScraper:
         if is_success:
 
             # Basic information
-            token_details["symbol"] = self.get_value(response, "symbol")
-            token_details["name"] = self.get_value(response, "name")
-            token_details["hashing_algorithm"] = self.get_value(
+            token_details["symbol"] = cls.get_value(response, "symbol")
+            token_details["name"] = cls.get_value(response, "name")
+            token_details["hashing_algorithm"] = cls.get_value(
                 response, "hashing_algorithm")
-            token_details["public_notice"] = self.get_value(
+            token_details["public_notice"] = cls.get_value(
                 response, "public_notice")
-            token_details["additional_notice"] = self.get_value(
+            token_details["additional_notice"] = cls.get_value(
                 response, "additional_notice")
 
             # Description
-            description = self.get_value(response, "description")
-            token_details["description"] = self.get_value(description, "en")
+            description = cls.get_value(response, "description")
+            token_details["description"] = cls.get_value(description, "en")
 
             # Categories
             token_details["categories"] = [
@@ -113,44 +122,43 @@ class CoinGeckoScraper:
             ]
 
             # Community
-            community = self.get_value(response, "community_data")
+            community = cls.get_value(response, "community_data")
             # 1. Twitter
-            twitter_screen_name = self.get_value(links, "twitter_screen_name")
+            twitter_screen_name = cls.get_value(links, "twitter_screen_name")
             if twitter_screen_name != "N/A":
                 token_details[
                     "twitter_url"] = "https://twitter.com/{twitter_screen_name}".format(
                         twitter_screen_name=twitter_screen_name)
-            token_details["twitter_followers"] = self.get_value(
+            token_details["twitter_followers"] = cls.get_value(
                 community, "twitter_followers")
             # 2. Telegram
-            telegram_channel_identifier = self.get_value(
+            telegram_channel_identifier = cls.get_value(
                 links, "telegram_channel_identifier")
             if telegram_channel_identifier != "N/A":
                 token_details[
                     "telegram_url"] = "https://t.me/{telegramChannelIdentifier}".format(
                         telegramChannelIdentifier=telegram_channel_identifier)
-            token_details["telegram_channel_user_count"] = self.get_value(
+            token_details["telegram_channel_user_count"] = cls.get_value(
                 community, "telegram_channel_user_count")
             # 3. Reddit
-            token_details["reddit_url"] = self.get_value(
-                links, "subreddit_url")
+            token_details["reddit_url"] = cls.get_value(links, "subreddit_url")
 
             # Scoring
-            token_details["coingecko_rank"] = self.get_value(
+            token_details["coingecko_rank"] = cls.get_value(
                 links, "coingecko_rank")
-            token_details["coingecko_score"] = self.get_value(
+            token_details["coingecko_score"] = cls.get_value(
                 links, "coingecko_score")
-            token_details["community_score"] = self.get_value(
+            token_details["community_score"] = cls.get_value(
                 links, "community_score")
-            token_details["liquidity_score"] = self.get_value(
+            token_details["liquidity_score"] = cls.get_value(
                 links, "liquidity_score")
 
             # Image
-            image = self.get_value(response, "image")
-            token_details["image"] = self.get_value(response, "large")
+            image = cls.get_value(response, "image")
+            token_details["image"] = cls.get_value(response, "large")
 
             # Last updated time
-            token_details["last_updated"] = self.get_value(
+            token_details["last_updated"] = cls.get_value(
                 response, "last_updated")
 
         return token_details
