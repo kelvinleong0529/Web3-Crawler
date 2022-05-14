@@ -151,17 +151,22 @@ and more
 
 # **4. NFT Info Generator**
 - Retrieve NFTs related information (NFT Collection, NFT User, Hot & Trending NFTs etc.)
+## **Categories**
+### **(A) NFT Collection**
 ```
-NFT Collection:
 1. Collection Activity (Sell,Buy,Mint,etc)
 2. Collection Assets
 3. Collection Details
 4. Collection Holders
-NFT User:
+```
+### **(B) NFT User**
+```
 1. User Activity (Sell,Buy,Mint,etc)
 2. User NFT Collection
 3. User Gallery
-NFT Gas:
+```
+### **(C) NFT Gas**
+```
 1. Get current Gas price
 NFT Whales (category):
 1. Smart Money 
@@ -169,7 +174,9 @@ NFT Whales (category):
 3. Art Blocks
 4. Bored Ape Yacht Club
 5. Crypto Punks
-Hot & Trending NFTS (category):
+```
+### **(D) Hot & Trending NFTS**
+```
 1. Hot Selling Ranking
 2. Volume Ranking
 3. Smart Money Buys Ranking
