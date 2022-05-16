@@ -1,7 +1,7 @@
 import requests
 
 
-class DexToolsScraper:
+class TokenInfoGenerator:
 
     __api = "https://www.dextools.io/chain-{network}/api/pair/search?s={search_string}"
     __HEADERS = {

@@ -47,11 +47,11 @@ pipenv install
 | Pairing details   | pairing address, exchange, pair type, base and target token's info    |
 # **Usage**
 ```python
->>> from src.data_aggregator import DexToolsScraper
+>>> from src.data_aggregator import TokenInfoGenerator
 
->>> MyDexToolsScraper = DexToolsScraper()
+>>> MyTokenInfoGenerator = TokenInfoGenerator()
 ... search_string = "APE"
-... for index,token in enumerate(MyDexToolsScraper.get_tokens(search_string)):
+... for index,token in enumerate(MyTokenInfoGenerator.get_tokens(search_string)):
 ...     # print all token's address with "APE" as symbol or similar
 ...     print(token["network"] + "; " + token["address"])
 
@@ -64,7 +64,7 @@ pipenv install
 ## **Parameteres**
 1. **search_string**: str, token's name, symbol, or address that wanted to be searched
 
-# **2. Honeypot Detector**
+# **2. Honeypot Validator**
 - Determine if a token is a honeypot (crypto scam)
 - Chains and Networks supported currently:
 ```
@@ -75,12 +75,12 @@ pipenv install
 ```
 # **Usage**
 ```python
->>> from utils.honeypot import HoneypotScraper
+>>> from utils.honeypot import HoneypotValidator
 
->>> MyHoneypotScraper = HoneypotScraper()
+>>> MyHoneypotValidator = HoneypotValidator()
 ... network = "Binance Smart Chain"
 ... address = "0x7ccE94C0B2C8aE7661f02544E62178377Fe8cF92"
-... honeypot_result = MyHoneypotScraper.check_honey(network = network,address = address )
+... honeypot_result = MyHoneypotValidator.check_honey(network = network,address = address )
 
 # based on 2 honeypot sources, 2 failed to detected honeypot, 0 detected honeypot
 {'message': 'Checked 2 honeypot source(s)', 'non_honeypot': 2, 'is_honeypot': 0}
