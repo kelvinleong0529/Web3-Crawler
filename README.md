@@ -53,7 +53,7 @@ pipenv install
 ... search_string = "APE"
 ... for index,token in enumerate(MyTokenInfoGenerator.get_tokens(search_string)):
 ...     # print all token's address with "APE" as symbol or similar
-...     print(f"{token["name"]}; {token["network"]}; {token["address"]}")
+...     print(f"({index}) {token["name"]}; {token["network"]}; {token["address"]}")
 
 (0) ApeCoin; ethereum; 0x4d224452801aced8b2f0aebe155379bb5d594381
 (1) APE MOON; bsc; 0xf5b21a18a510cd315dd9f46d3c117321f1851d51
@@ -138,7 +138,7 @@ and more
 >>> MyGameFiScraper = GameFiScraper()
 ... category_list = ["3D","Card"]
 ... for index, gamefi_token in enumerate(MyGameFiScraper.search_by_category(category_list)):
-...     print(f"{index}) {gamefi_token["game_name"]}; 
+...     print(f"({index}) {gamefi_token["game_name"]}; 
 ...         {gamefi_token["category"]}; {gamefi_token["description"]}")
 
 (0) Splintershards; Card,Collectibles; Splinterlands is a unique digital trading card game that allows players to truly own their cards and other in-game assets.
