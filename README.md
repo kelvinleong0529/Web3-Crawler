@@ -53,7 +53,7 @@ pipenv install
 ... search_string = "APE"
 ... for index,token in enumerate(MyTokenInfoGenerator.get_tokens(search_string)):
 ...     # print all token's address with "APE" as symbol or similar
-...     print(token["network"] + "; " + token["address"])
+...     print(f"{token["name"]}; {token["network"]}; {token["address"]}")
 
 (0) ApeCoin; ethereum; 0x4d224452801aced8b2f0aebe155379bb5d594381
 (1) APE MOON; bsc; 0xf5b21a18a510cd315dd9f46d3c117321f1851d51
@@ -138,8 +138,8 @@ and more
 >>> MyGameFiScraper = GameFiScraper()
 ... category_list = ["3D","Card"]
 ... for index, gamefi_token in enumerate(MyGameFiScraper.search_by_category(category_list)):
-...     print("(" + str(index) + ") " + gamefi_token["game_name"] + "; " +
-...         gamefi_token["category"] + "; " + gamefi_token["description"])
+...     print(f"{index}) {gamefi_token["game_name"]}; 
+...         {gamefi_token["category"]}; {gamefi_token["description"]}")
 
 (0) Splintershards; Card,Collectibles; Splinterlands is a unique digital trading card game that allows players to truly own their cards and other in-game assets.
 (1) Gods Unchained; Card,Collectibles,Metaverse; Gods Unchained is a free-to-play tactical card game that gives players true ownership of their in-game items.
@@ -191,8 +191,7 @@ NFT Whales (category):
 
 >>> MyNftScraper = NftScraper()
 ... for index, nft in enumerate(MyNftScraper.get_hot_minting_ranking(limit =10)):
-...     print("(" + str(index) + ") " + nft["name"] + "; " +
-...         nft["minters"] + "; " + nft["volume_in_24h"])
+...     print(f"({index}) {nft["name"]}; {nft["minters"]}; {nft["volume_in_24h"]}")
 
 (0) McLaren MSO LAB Genesis; 44; 16.544000000000004
 (1) Hedgies; 11; 9.0534
