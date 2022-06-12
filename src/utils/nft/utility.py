@@ -100,8 +100,13 @@ class Utlity:
         except requests.RequestException as e:
             print("General Error, something unexpected happen!")
             print(str(e))
+            is_success = False
         except KeyboardInterrupt:
             print("Program was forced to close externally")
+            is_success = False
+        except Exception as ex:
+            print(ex)
+            is_success = False
         return (is_success, response)
 
     @classmethod

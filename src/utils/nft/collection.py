@@ -10,7 +10,7 @@ class CollectionBaseClass(Validation):
 
     @classmethod
     def validate_collection_id(cls, collection_id: str) -> None:
-        """ validate the collection_id and remvoes any trailing whitespaces
+        """ validate the collection_id
         """
         if not super().is_str(collection_id):
             raise TypeError("collection_id argument must be STRING type")
