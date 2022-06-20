@@ -4,7 +4,7 @@ from .validation import Validation
 class UserBaseClass(Validation):
 
     __user_details_api = "https://api.nftbase.com/web/api/v1/user/info/address?address={address}"
-    user_api = "https://api.nftbase.com/web/api/v1/user/{feature}?user_id={{user_id}}&offset={{offset}}&limit={{limit_per_page}}"
+    __user_api = "https://api.nftbase.com/web/api/v1/user/{feature}?user_id={{user_id}}&offset={{offset}}&limit={{limit_per_page}}"
 
     def __init__(self) -> None:
         super().__init__()
@@ -69,7 +69,7 @@ class UserBaseClass(Validation):
 
 class UserActivity(UserBaseClass):
 
-    __api = UserBaseClass.user_api.format(
+    __api = UserBaseClass.__user_api.format(
         feature="activities") + "&action={action_list}"
 
     def __init__(self) -> None:
@@ -180,7 +180,7 @@ class UserActivity(UserBaseClass):
 
 class UserCollection(UserBaseClass):
 
-    __api = UserBaseClass.user_api.format(
+    __api = UserBaseClass.__user_api.format(
         feature="collection") + "&sort={sort_option}"
 
     def __init__(self) -> None:
@@ -287,7 +287,7 @@ class UserCollection(UserBaseClass):
 
 class UserGallery(UserBaseClass):
 
-    __api = UserBaseClass.user_api.format(
+    __api = UserBaseClass.__user_api.format(
         feature="gallery") + "&sort={sort_option}"
 
     def __init__(self) -> None:

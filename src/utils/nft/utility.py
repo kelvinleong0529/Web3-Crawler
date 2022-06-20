@@ -48,8 +48,9 @@ class Utlity:
         return input.capitalize()
 
     @classmethod
-    # function to join the target list with "," and merge into a string
     def list_to_str(cls, input_list: list) -> str:
+        """ function to join the target list with "," and merge into a string
+        """
         if not cls.is_list(input_list):
             raise TypeError("Only accepts list type argument")
         return ",".join(input_list)
@@ -66,8 +67,9 @@ class Utlity:
             return str(input_dict[key])
 
     @classmethod
-    # function to remove duplicates in a dictionary list
     def remove_duplicate_in_dict_list(cls, input: list) -> list:
+        """ function to remove duplicates in a dictionary list
+        """
         if not cls.is_list(input):
             raise TypeError("Only accepts LIST as arguments")
         return [dict(t) for t in {tuple(d.items()) for d in input}]

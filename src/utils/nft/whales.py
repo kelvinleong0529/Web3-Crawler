@@ -9,10 +9,11 @@ class Whale(Validation):
         super().__init__()
 
     @classmethod
-    # function to scrape the nfts based on the input feature
     def __get_featured_nft(cls, feature: str, action_list: list,
                            price_range: int | None, limit_per_page: int | None,
                            limit: int | None, proxy_dict: dict | None) -> list:
+        """ function to scrape the nfts based on the input feature
+        """
 
         # create a list to store the scraped results
         featured_nft_list = []

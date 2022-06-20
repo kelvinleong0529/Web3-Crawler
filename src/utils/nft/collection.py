@@ -3,7 +3,7 @@ from .validation import Validation
 
 class CollectionBaseClass(Validation):
 
-    collection_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
+    __collection_api = "https://api.nftbase.com/web/api/v1/collection/{feature}?collection_id={collection_id}&limit={limit_per_page}&offset={offset}"
 
     def __init__(self) -> None:
         super().__init__()
@@ -46,7 +46,7 @@ class CollectionActivity(CollectionBaseClass):
         while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
-            api = cls.collection_api.format(feature=cls.__FEATURE,
+            api = cls.__collection_api.format(feature=cls.__FEATURE,
                                             collection_id=collection_id,
                                             limit_per_page=limit_per_page,
                                             offset=offset)
@@ -316,7 +316,7 @@ class CollectionHolder(CollectionBaseClass):
         while offset <= limit and not finished_scraping:
 
             # make GET request to the API endpoint
-            api = cls.collection_api.format(feature=cls.__FEATURE,
+            api = cls.__collection_api.format(feature=cls.__FEATURE,
                                             collection_id=collection_id,
                                             limit_per_page=limit_per_page,
                                             offset=offset)
