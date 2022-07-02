@@ -26,6 +26,14 @@ class Utility:
         return str(input)
 
     @staticmethod
+    def trim_string(input: str) -> str:
+        return input.strip()
+
+    @staticmethod
+    def lower_string(input: str) -> str:
+        return input.lower()
+
+    @staticmethod
     # function to join the target list with "," and merge into a string
     def list_to_str(input: list) -> str:
         return ",".join(input)

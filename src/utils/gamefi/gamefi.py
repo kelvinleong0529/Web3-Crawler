@@ -11,11 +11,18 @@ class GameFiScraper(Utility):
     @classmethod
     # function to filter GameFi tokens by category(s), reference website: https://v2.gamefi.org/
     def search_by_category(cls,
-                           category: list,
+                           categories: list,
                            limit: int = None,
                            proxy_dict: dict = None) -> list:
 
-        category_string = super().list_to_str(category)
+        pre_processed_categories = []
+        for category in categories:
+            pre_processed_category = super().lower_string(category)
+            pre_processed_category = super().trim_string(
+                pre_processed_category)
+            pre_processed_categories.append(pre_processed_category)
+
+        category_string = super().list_to_str(pre_processed_categories)
         limit = super().validate_limit(limit)
 
         # create a list to store the details
