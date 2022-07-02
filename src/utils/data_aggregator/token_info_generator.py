@@ -128,7 +128,7 @@ class TokenInfoGenerator:
                                                     proxy_dict=proxy_dict)
 
         if is_success:
-            for index, value in enumerate(response):
+            for _, value in enumerate(response):
                 # create a dict to store the details
                 token = {}
 

@@ -52,7 +52,7 @@ class GameFiScraper(Utility):
                     finished_scraping = True
                     continue
 
-                for index, token_iterator in enumerate(data):
+                for _, token_iterator in enumerate(data):
 
                     if scraped_count > limit:
                         finished_scraping = True
