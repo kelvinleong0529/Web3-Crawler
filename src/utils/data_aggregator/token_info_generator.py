@@ -1,7 +1,10 @@
 import requests
+import urllib.parse
 
 
 class TokenInfoGenerator:
+
+    # this scraper class scrapes token information from DexTools, reference website: https://www.dextools.io/app/
 
     __api = "https://www.dextools.io/chain-{network}/api/pair/search?s={search_string}"
     __HEADERS = {
@@ -34,6 +37,10 @@ class TokenInfoGenerator:
     def is_none(input: None) -> bool:
         return True if input is None else False
 
+    @staticmethod
+    def url_encode_string(input: str) -> str:
+        return urllib.parse.quote(input)
+
     @classmethod
     def get_value(cls, input_dict: dict, key: str) -> dict | list | str:
         if not cls.is_dict(input_dict):
@@ -53,18 +60,21 @@ class TokenInfoGenerator:
         return [dict(t) for t in {tuple(d.items()) for d in input}]
 
     @classmethod
-    def get_tokens(cls, search_string: str, proxy_dict: dict = None) -> list:
+    def get_tokens(cls, search_input: str, proxy_dict: dict = None) -> list:
 
         # validate the input parameters
-        if not cls.is_str(search_string):
+        if not cls.is_str(search_input):
             raise TypeError("search_string must be STRING type")
+
+        # URL encode the search string
+        url_encoded_search_input = cls.url_encode_string(search_input)
 
         # create a list to store the scraped results
         token_detail_list = []
-        for index, network in enumerate(cls.__NETWORKS):
+        for _, network in enumerate(cls.__NETWORKS):
             token_detail_list.append(
                 cls._search_network(network=network,
-                                    search_string=search_string,
+                                    search_string=url_encoded_search_input,
                                     proxy_dict=proxy_dict))
         token_detail_list = cls.remove_duplicate_in_dict_list(
             token_detail_list)

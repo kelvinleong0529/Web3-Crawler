@@ -1,2 +1,2 @@
 from .coingecko import CoinGeckoScraper
-from .dextools import DexToolsScraper
+from .token_info_generator import TokenInfoGenerator
