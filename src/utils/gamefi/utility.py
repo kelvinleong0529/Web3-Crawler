@@ -1,3 +1,6 @@
+import requests
+
+
 class Utility:
 
     LIMIT = 20
@@ -50,13 +53,49 @@ class Utility:
             return str(input_dict[key])
 
     @classmethod
-    def get_url_response(cls, url: str, proxy_dict: dict | None) -> tuple:
-        """ make a GET request to the url end point, and return the response in json format
+    def get_url_response(cls, url: str,
+                         proxy_dict: dict | None) -> tuple[bool, str]:
+        """
+        Make a GET request to url endpoint and return the result in JSON format
+
+        Args:
+            url (str): API / URL endpoint
+            proxy_dict (dict | None): Proxy Settings Parameter
+
+        Raises:
+            TypeError: when 'url' passed is not STR
+            TypeError: when 'proxy_dict' is not DICT
+
+        Returns:
+            tuple[bool, str]: 1st value -> true indicates successful request and vice versa, 2nd value -> GET response in JSON format
         """
         if not cls.is_str(url):
             raise TypeError("Invalid URL / API passed!")
         if not (cls.is_dict(proxy_dict) or cls.is_none(proxy_dict)):
             raise TypeError("proxy_dict must be DICTIONARY type")
+
+        # is_sucess TRUE means successful GET request
+        is_success, response = None, None
+        try:
+            response = requests.get(url=url, proxies=proxy_dict)
+            is_success = True
+            response = response.json()
+        except requests.ConnectionError as e:
+            print(
+                "Connection Error, make sure you are connected to the Internet!"
+            )
+            print(str(e))
+            is_success = False
+        except requests.Timeout as e:
+            print("Timeout Error!")
+            print(str(e))
+            is_success = False
+        except requests.RequestException as e:
+            print("General Error, something unexpected happen!")
+            print(str(e))
+        except KeyboardInterrupt:
+            print("Program was forced to close externally")
+        return (is_success, response)
 
     @classmethod
     # function to validate the "limit" parameter
