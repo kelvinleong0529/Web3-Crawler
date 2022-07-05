@@ -10,7 +10,14 @@ class CollectionBaseClass(Validation):
 
     @classmethod
     def validate_collection_id(cls, collection_id: str) -> None:
-        """ validate the collection_id
+        """
+        Validates the collection ID and raise TypeError if it's not STRING type
+
+        Args:
+            collection_id (str): Collection ID
+
+        Raises:
+            TypeError: When 'collection_id' is not STRING type
         """
         if not super().is_str(collection_id):
             raise TypeError("collection_id argument must be STRING type")
@@ -29,7 +36,18 @@ class CollectionActivity(CollectionBaseClass):
                                 limit_per_page: int = None,
                                 limit: int = None,
                                 proxy_dict: dict = None) -> list:
+        """
+        Get NFT collection's most recent activities based on collection ID
 
+        Args:
+            collection_id (str): collection ID
+            limit_per_page (int, optional): Number of activities to get from each API call. Defaults to None. (Lower means more API call, might result in longer scraping time)
+            limit (int, optional): Number of activites to scrape. Defaults to None.
+            proxy_dict (dict, optional): Proxy Setting Parameters. Defaults to None.
+
+        Returns:
+            list: NFT collection activity's details and information
+        """
         # create a list to store the scrape results
         collection_activity_list = []
 
@@ -47,9 +65,9 @@ class CollectionActivity(CollectionBaseClass):
 
             # make GET request to the API endpoint
             api = cls.__collection_api.format(feature=cls.__FEATURE,
-                                            collection_id=collection_id,
-                                            limit_per_page=limit_per_page,
-                                            offset=offset)
+                                              collection_id=collection_id,
+                                              limit_per_page=limit_per_page,
+                                              offset=offset)
             is_success, response = super().get_url_response(
                 url=api, proxy_dict=proxy_dict)
 
@@ -133,6 +151,18 @@ class CollectionAsset(CollectionBaseClass):
                              limit_per_page: int = None,
                              limit: int = None,
                              proxy_dict: dict = None) -> list:
+        """
+        Get NFT collection's asset based on collection ID
+
+        Args:
+            collection_id (str): collection ID
+            limit_per_page (int, optional): Number of activities to get from each API call. Defaults to None. (Lower means more API call, might result in longer scraping time)
+            limit (int, optional): Number of activites to scrape. Defaults to None.
+            proxy_dict (dict, optional): Proxy Setting Parameters. Defaults to None.
+
+        Returns:
+            list: NFT collection asset's details and information
+        """
 
         # create a list to store the scrape results
         collection_asset_list = []
@@ -229,6 +259,16 @@ class CollectionDetail(CollectionBaseClass):
     def get_collection_detail(self,
                               collection_id: str,
                               proxy_dict: dict = None) -> dict:
+        """
+        Get NFT collection's most recent transaction details based on collection ID
+
+        Args:
+            collection_id (str): collection ID
+            proxy_dict (dict, optional): Proxy Setting Parameters. Defaults to None.
+
+        Returns:
+            list: NFT Collection's detail and information
+        """
 
         # create a list to store the scrape results
         collection_details = {}
@@ -299,6 +339,18 @@ class CollectionHolder(CollectionBaseClass):
                               limit_per_page: int = None,
                               limit: int = None,
                               proxy_dict: dict = None) -> list:
+        """
+        Get NFT collection's holders based on collection ID
+
+        Args:
+            collection_id (str): collection ID
+            limit_per_page (int, optional): Number of activities to get from each API call. Defaults to None. (Lower means more API call, might result in longer scraping time)
+            limit (int, optional): Number of activites to scrape. Defaults to None.
+            proxy_dict (dict, optional): Proxy Setting Parameters. Defaults to None.
+
+        Returns:
+            list: NFT Collection holder's detail and information
+        """
 
         # create a list to store the scrape results
         collection_holders_list = []
@@ -317,9 +369,9 @@ class CollectionHolder(CollectionBaseClass):
 
             # make GET request to the API endpoint
             api = cls.__collection_api.format(feature=cls.__FEATURE,
-                                            collection_id=collection_id,
-                                            limit_per_page=limit_per_page,
-                                            offset=offset)
+                                              collection_id=collection_id,
+                                              limit_per_page=limit_per_page,
+                                              offset=offset)
             is_success, response = super().get_url_response(
                 url=api, proxy_dict=proxy_dict)
 
