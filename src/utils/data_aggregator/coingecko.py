@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 class CoinGeckoScraper:
@@ -36,8 +37,21 @@ class CoinGeckoScraper:
             return str(input_dict[key])
 
     @classmethod
-    def get_url_response(cls, url: str, proxy_dict: dict | None) -> tuple:
-        """ make a GET request to the url end point, and return the response in json format
+    def get_url_response(cls, url: str,
+                         proxy_dict: dict | None) -> tuple[bool, str]:
+        """
+        Make a GET request to url endpoint and return the result in JSON format
+
+        Args:
+            url (str): API / URL endpoint
+            proxy_dict (dict | None): Proxy Settings Parameter
+
+        Raises:
+            TypeError: when 'url' passed is not STR
+            TypeError: when 'proxy_dict' is not DICT
+
+        Returns:
+            tuple[bool, str]: 1st value -> true indicates successful request and vice versa, 2nd value -> GET response in JSON format
         """
         if not cls.is_str(url):
             raise TypeError("Invalid URL / API passed!")
@@ -71,14 +85,31 @@ class CoinGeckoScraper:
     def get_token_details(cls,
                           coingecko_id: str,
                           proxy_dict: dict = None) -> dict:
+        """
+        Get the token's following details based on Coin Gecko token ID:
+        1. Basic information -> token name, symbol, hashing algorithm
+        2. Links -> Official forum URL, homepages, chat URL, announcement URL
+        3. Community -> Twitter, Telegram, Reddit
+        4. Scoring -> Coin Gecko rank & score, community score, liquidity score
+        5. Image
+
+        Args:
+            coingecko_id (str): Coin Gecko Token ID
+            proxy_dict (dict, optional): Proxy Settings Parameter. Defaults to None.
+
+        Raises:
+            TypeError: when 'coingecko_id' is not STR
+
+        Returns:
+            dict: token's details
+        """
 
         # validate the input parameters
         if not cls.is_str(coingecko_id):
             raise TypeError("coingecko_id must be STRING type")
 
         # make GET request to the API endpoint
-        api = cls.__api.format(
-            id=coingecko_id)
+        api = cls.__api.format(id=coingecko_id)
         is_success, response = cls.get_url_response(url=api,
                                                     proxy_dict=proxy_dict)
 
